@@ -1,5 +1,6 @@
 package com.switchfully.digibooky.unclebrunodigibooky.repository;
 
+import com.switchfully.digibooky.unclebrunodigibooky.domain.Author;
 import com.switchfully.digibooky.unclebrunodigibooky.domain.Book;
 import org.springframework.stereotype.Repository;
 
@@ -13,6 +14,14 @@ public class BookRepository {
 
     public BookRepository() {
         bookList = new ArrayList<>();
+        populateBooklist();
+    }
+
+    // temporarily populating the list
+    private void populateBooklist() {
+        addBook(new Book("isbn1", "Title 1", new Author("First", "Last"), "This is the summary of 69"));
+        addBook(new Book("isbn2", "Title 2", new Author("Second", "Last"), "This is the summary of 69"));
+        addBook(new Book("isbn3", "Title 3", new Author("Third", "Last"), "This is the summary of 69"));
     }
 
     public BookRepository(List<Book> bookList) {
