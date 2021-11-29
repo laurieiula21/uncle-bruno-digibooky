@@ -10,6 +10,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import com.switchfully.digibooky.unclebrunodigibooky.domain.Book;
+import com.switchfully.digibooky.unclebrunodigibooky.service.AuthorisationService;
+import com.switchfully.digibooky.unclebrunodigibooky.service.BookService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,6 +27,7 @@ public class BookController {
     private final AuthorisationService authorisationService;
     private final BookMapper bookMapper;
 
+    @Autowired
     public BookController(BookService bookService, AuthorisationService authorisationService, BookMapper bookMapper) {
         this.bookService = bookService;
         this.authorisationService = authorisationService;
@@ -36,4 +43,12 @@ public class BookController {
                 .collect(Collectors.toList());
         return bookDtoList;
     }
+
+    @GetMapping(path="/{isbn}", produces = "application/json")
+    @ResponseStatus(HttpStatus.OK)
+    public Book getBook(@PathVariable("isbn") String isbn) {
+        return bookService.showDetailsOfBook(isbn);
+    }
+
+
 }

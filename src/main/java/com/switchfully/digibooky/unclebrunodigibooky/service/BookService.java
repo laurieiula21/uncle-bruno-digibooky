@@ -17,4 +17,13 @@ public class BookService {
     public List<Book> getAllBooks() {
         return bookRepository.getAllBooks();
     }
+    public Book showDetailsOfBook(String isbn){
+        for(Book b : bookRepository.getAllBooks()){
+            if(b.getIsbn().equals(isbn)){
+                return b;
+            }
+        }
+        return null;
+    }
+
 }
