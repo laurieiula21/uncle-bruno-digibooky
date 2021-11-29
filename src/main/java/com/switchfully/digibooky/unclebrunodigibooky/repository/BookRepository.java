@@ -1,2 +1,4 @@
-package com.switchfully.digibooky.unclebrunodigibooky.repository;public class BookRepository {
+package com.switchfully.digibooky.unclebrunodigibooky.repository;
+
+public class BookRepository {
 }

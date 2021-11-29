@@ -1,2 +1,4 @@
-package com.switchfully.digibooky.unclebrunodigibooky.service;public class BookService {
+package com.switchfully.digibooky.unclebrunodigibooky.service;
+
+public class BookService {
 }

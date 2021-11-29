@@ -1,2 +1,4 @@
-package com.switchfully.digibooky.unclebrunodigibooky.api;public class UserController {
+package com.switchfully.digibooky.unclebrunodigibooky.api;
+
+public class UserController {
 }
