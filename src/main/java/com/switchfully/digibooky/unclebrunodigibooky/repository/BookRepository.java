@@ -22,4 +22,8 @@ public class BookRepository {
     public List<Book> getAllBooks() {
         return bookList;
     }
+
+    public void addBook(Book book) {
+        bookList.add(book);
+    }
 }
