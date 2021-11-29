@@ -13,7 +13,7 @@ public class BookService {
     }
 
     public Book showDetailsOfBook(String isbn){
-        for(Book b : bookRepository){
+        for(Book b : bookRepository.getAllBooks()){
             if(b.getIsbn().equals(isbn)){
                 return b;
             }
