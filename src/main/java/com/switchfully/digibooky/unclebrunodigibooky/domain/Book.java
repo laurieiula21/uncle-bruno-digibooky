@@ -36,4 +36,9 @@ public class Book {
     public String getSummary() {
         return summary;
     }
+
+    @Override
+    public String toString(){
+        return isbn+"\n"+title+"\n"+author+"\n"+summary;
+    }
 }
