@@ -1,41 +1,45 @@
 package com.switchfully.digibooky.unclebrunodigibooky.api;
 
+import com.switchfully.digibooky.unclebrunodigibooky.domain.book.Author;
 import com.switchfully.digibooky.unclebrunodigibooky.domain.book.BookDto;
-import com.switchfully.digibooky.unclebrunodigibooky.domain.user.User;
-import com.switchfully.digibooky.unclebrunodigibooky.domain.user.UserDto;
-import com.switchfully.digibooky.unclebrunodigibooky.domain.user.UserRole;
-import com.switchfully.digibooky.unclebrunodigibooky.repository.BookRepository;
 import io.restassured.RestAssured;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 
+
 import java.util.ArrayList;
 import java.util.List;
 
-import static io.restassured.http.ContentType.JSON;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 class BookControllerTest {
-
-    BookRepository bookRepository;
-
-    @BeforeEach
-    void setup(){
-        bookRepository = new BookRepository();
-    }
 
     @Value("${server.port}")
     private int port;
 
     @Test
-    void givenAnExistingRepository_whenGettingAllBooks_thenReceiveHttpStatusOKAndListOfBooks(){
-
+    void givenAnExistingRepository_whenGettingAllBooks_thenReceiveHttpStatusOKAndListOfBooks() {
         List<BookDto> bookDtoList = new ArrayList<>();
+        bookDtoList.add(new BookDto()
+                .setTitle("Title 1")
+                .setAuthor(new Author("First", "Last"))
+                .setIsbn("isbn1")
+                .setSummary("This is the summary of 69"));
+        bookDtoList.add(new BookDto()
+                .setTitle("Title 2")
+                .setAuthor(new Author("Second", "Last"))
+                .setIsbn("isbn2")
+                .setSummary("This is the summary of 69"));
+        bookDtoList.add(new BookDto()
+                .setTitle("Title 3")
+                .setAuthor(new Author("Third", "Last"))
+                .setIsbn("isbn3")
+                .setSummary("This is the summary of 69"));
+
         List<BookDto> bookList =
                 RestAssured
                         .given()
@@ -46,10 +50,17 @@ class BookControllerTest {
                         .assertThat()
                         .statusCode(HttpStatus.OK.value())
                         .extract()
-                        .as(bookDtoList.getClass());
-        System.out.println(bookList);
+                        .body()
+                        .jsonPath()
+                        .getList(".", BookDto.class);
 
-        assertThat(bookRepository.getAllBooks().size()).isEqualTo(bookList.size());
+        System.out.println(bookList);
+        System.out.println(bookDtoList);
+
+        assertThat(bookDtoList).containsAll(bookList);
+
+
+
     }
 }
 

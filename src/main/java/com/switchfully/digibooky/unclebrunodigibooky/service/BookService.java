@@ -8,6 +8,7 @@ import java.util.List;
 
 @Service
 public class BookService {
+
     private final BookRepository bookRepository;
 
     public BookService(BookRepository bookRepository) {
