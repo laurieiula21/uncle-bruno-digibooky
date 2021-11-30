@@ -3,7 +3,6 @@ package com.switchfully.digibooky.unclebrunodigibooky.service;
 import com.switchfully.digibooky.unclebrunodigibooky.domain.bookloan.BookLoan;
 import com.switchfully.digibooky.unclebrunodigibooky.domain.exceptions.BookNotAvailableException;
 import com.switchfully.digibooky.unclebrunodigibooky.repository.BookLoanRepository;
-import com.switchfully.digibooky.unclebrunodigibooky.repository.BookRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -27,7 +26,7 @@ public class BookLoanService {
     public void lendBook(String isbn, String userIdToFind) {
         String bookId = bookService.getOneBook(isbn).getId();
         if (!isBookAvailable(bookId)) {
-            throw new BookNotAvailableException("The book with isbn  " + isbn + " is not available anymore.");
+            throw new BookNotAvailableException("The book with isbn: " + isbn + " is not available anymore.");
         }
         String userId = userIdToFind;
         LocalDate lentOutDate = LocalDate.now();
@@ -37,6 +36,6 @@ public class BookLoanService {
     }
 
     private boolean isBookAvailable(String bookId) {
-        return getAllBookLoans().stream().anyMatch(loan -> loan.getBookId().equals(bookId));
+        return getAllBookLoans().stream().noneMatch(loan -> loan.getBookId().equals(bookId));
     }
 }
