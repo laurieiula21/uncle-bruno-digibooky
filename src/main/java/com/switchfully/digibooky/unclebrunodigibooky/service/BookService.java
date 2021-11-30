@@ -1,5 +1,6 @@
 package com.switchfully.digibooky.unclebrunodigibooky.service;
 
+import com.switchfully.digibooky.unclebrunodigibooky.api.IsbnDoesNotExistException;
 import com.switchfully.digibooky.unclebrunodigibooky.domain.Book;
 import com.switchfully.digibooky.unclebrunodigibooky.repository.BookRepository;
 import org.springframework.stereotype.Service;
@@ -17,13 +18,13 @@ public class BookService {
     public List<Book> getAllBooks() {
         return bookRepository.getAllBooks();
     }
-    public Book showDetailsOfBook(String isbn){
-        for(Book b : bookRepository.getAllBooks()){
-            if(b.getIsbn().equals(isbn)){
-                return b;
+    public Book getOneBook(String isbn){
+        for(Book book : bookRepository.getAllBooks()){
+            if(book.getIsbn().equals(isbn)){
+                return book;
             }
         }
-        return null;
+        throw new IsbnDoesNotExistException("The isbn does not exist");
     }
 
 }
