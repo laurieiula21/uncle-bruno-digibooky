@@ -9,8 +9,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import io.restassured.RestAssured;
 
+import java.net.http.HttpResponse;
+
 import static io.restassured.http.ContentType.JSON;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.containsString;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 class UserControllerTest {
@@ -55,4 +58,20 @@ class UserControllerTest {
 
     }
 
+    @Test
+    void createUserMember_givenNullUserToCreate_thenIllegalArgumentExceptionIsThrown() {
+
+        RestAssured
+                .given()
+                .accept(JSON)
+                .contentType(JSON)
+                .when()
+                .port(port)
+                .post("/users")
+                .then()
+                .assertThat()
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .body(containsString("User is null"));
+
+    }
 }

@@ -21,6 +21,5 @@ public class UserRepository {
 
     public boolean addUser(User user){
         return userList.add(user);
-
     }
 }
