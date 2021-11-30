@@ -1,6 +1,7 @@
 package com.switchfully.digibooky.unclebrunodigibooky.domain.user;
 
 import com.switchfully.digibooky.unclebrunodigibooky.domain.Address;
+import com.switchfully.digibooky.unclebrunodigibooky.domain.exceptions.InvalidUserException;
 
 public class UserDto {
 
@@ -74,4 +75,5 @@ public class UserDto {
         this.userRole = userRole;
         return this;
     }
+
 }

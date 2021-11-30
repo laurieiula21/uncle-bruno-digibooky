@@ -1,8 +1,12 @@
 package com.switchfully.digibooky.unclebrunodigibooky.api;
 
 import com.switchfully.digibooky.unclebrunodigibooky.domain.Address;
+import com.switchfully.digibooky.unclebrunodigibooky.domain.book.BookDto;
 import com.switchfully.digibooky.unclebrunodigibooky.domain.user.UserDto;
 import com.switchfully.digibooky.unclebrunodigibooky.domain.user.UserRole;
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -60,9 +64,11 @@ class UserControllerTest {
 
     @Test
     void createUserMember_givenNullUserToCreate_thenIllegalArgumentExceptionIsThrown() {
+        UserDto emptyUserDto = new UserDto();
 
-        RestAssured
+        String message = RestAssured
                 .given()
+                .body(emptyUserDto)
                 .accept(JSON)
                 .contentType(JSON)
                 .when()
@@ -71,7 +77,12 @@ class UserControllerTest {
                 .then()
                 .assertThat()
                 .statusCode(HttpStatus.BAD_REQUEST.value())
-                .body(containsString("User is null"));
+                .extract().path("message");
+        //extract.body();
+        Assertions.assertThat(message).isEqualTo("User information given is not valid.");
+                //.body()
+                //.jsonPath().toString());
+        //.body(containsString("User is null"));
 
     }
 }
