@@ -18,4 +18,9 @@ public class UserRepository {
     public UserRepository(List<User> userList) {
         this.userList = userList;
     }
+
+    public boolean addUser(User user){
+        return userList.add(user);
+
+    }
 }
