@@ -1,4 +1,4 @@
-package com.switchfully.digibooky.unclebrunodigibooky.api;
+package com.switchfully.digibooky.unclebrunodigibooky.domain.exceptions;
 
 public class IsbnDoesNotExistException extends RuntimeException {
 
