@@ -1,4 +1,4 @@
-package com.switchfully.digibooky.unclebrunodigibooky.domain;
+package com.switchfully.digibooky.unclebrunodigibooky.domain.book.fine;
 
 public class LateFine extends Fine {
     public LateFine(int weeksLate) {

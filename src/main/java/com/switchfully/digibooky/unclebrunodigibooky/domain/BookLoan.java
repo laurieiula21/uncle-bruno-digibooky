@@ -1,5 +1,7 @@
 package com.switchfully.digibooky.unclebrunodigibooky.domain;
 
+import com.switchfully.digibooky.unclebrunodigibooky.domain.book.fine.Fine;
+
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;

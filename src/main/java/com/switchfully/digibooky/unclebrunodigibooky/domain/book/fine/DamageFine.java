@@ -1,4 +1,4 @@
-package com.switchfully.digibooky.unclebrunodigibooky.domain;
+package com.switchfully.digibooky.unclebrunodigibooky.domain.book.fine;
 
 public class DamageFine extends Fine {
     public DamageFine(boolean isDamaged) {

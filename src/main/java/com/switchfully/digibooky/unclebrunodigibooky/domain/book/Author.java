@@ -1,4 +1,4 @@
-package com.switchfully.digibooky.unclebrunodigibooky.domain;
+package com.switchfully.digibooky.unclebrunodigibooky.domain.book;
 
 import java.util.UUID;
 
