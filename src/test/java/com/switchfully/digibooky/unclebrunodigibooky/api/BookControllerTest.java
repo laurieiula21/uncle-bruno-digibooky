@@ -101,10 +101,7 @@ class BookControllerTest {
 
     }
 
-/*    @Test
-    void GivenANotExistingISBN_WhenGettingOneBook_ThenThrowAnException() {
-        assertThatExceptionOfType(IsbnDoesNotExistException.class).isThrownBy(() -> bookService.getOneBook("wrongISBN)"));
-    }*/
+
 }
 
 
