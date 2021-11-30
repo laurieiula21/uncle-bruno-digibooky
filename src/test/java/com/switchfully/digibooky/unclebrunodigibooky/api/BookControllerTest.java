@@ -2,41 +2,25 @@ package com.switchfully.digibooky.unclebrunodigibooky.api;
 
 import com.switchfully.digibooky.unclebrunodigibooky.domain.book.Author;
 import com.switchfully.digibooky.unclebrunodigibooky.api.mapper.BookMapper;
-import com.switchfully.digibooky.unclebrunodigibooky.domain.book.Author;
 import com.switchfully.digibooky.unclebrunodigibooky.domain.book.Book;
 import com.switchfully.digibooky.unclebrunodigibooky.domain.book.BookDto;
-import com.switchfully.digibooky.unclebrunodigibooky.domain.user.User;
-import com.switchfully.digibooky.unclebrunodigibooky.domain.user.UserDto;
-import com.switchfully.digibooky.unclebrunodigibooky.domain.user.UserRole;
-import com.switchfully.digibooky.unclebrunodigibooky.repository.BookRepository;
-import com.switchfully.digibooky.unclebrunodigibooky.service.BookService;
 import io.restassured.RestAssured;
-import org.hamcrest.core.Is;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
-
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
-
-import static io.restassured.http.ContentType.JSON;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 class BookControllerTest {
-
 
     @Value("${server.port}")
     private int port;
 
     @Test
-    void givenAnExistingRepository_whenGettingAllBooks_thenReceiveHttpStatusOKAndListOfBooks(){
-
+    void givenAnExistingRepository_whenGettingAllBooks_thenReceiveHttpStatusOKAndListOfBooks() {
         List<BookDto> bookDtoList = new ArrayList<>();
         bookDtoList.add(new BookDto()
                 .setTitle("Title 1")
@@ -72,9 +56,6 @@ class BookControllerTest {
         System.out.println(bookDtoList);
 
         assertThat(bookDtoList).containsAll(bookList);
-
-
-
     }
 
     @Test
