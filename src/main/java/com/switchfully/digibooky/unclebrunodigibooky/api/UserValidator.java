@@ -8,7 +8,9 @@ import org.springframework.stereotype.Component;
 public class UserValidator {
 
     public UserDto validate(UserDto userDto) {
-        if(userDto.getFirstName() == null || userDto.getFirstName() == null || userDto.getInss() == null || userDto.getAddress() == null){
+        if(userDto.getFirstName() == null || userDto.getLastName() == null ||
+                userDto.getInss() == null || userDto.getAddress() == null ||
+                userDto.getUserRole() == null){
             throw new InvalidUserException("User information given is not valid.");
         }
         return userDto;
