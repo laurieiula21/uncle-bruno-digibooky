@@ -19,4 +19,12 @@ public class UserService {
         boolean isAdded = userRepository.addUser(user);
         return user;
     }
+
+    public boolean isUniqueInss(String inss) {
+        return userRepository.isUniqueInss(inss);
+    }
+
+    public boolean isUniqueEmail(String email) {
+        return userRepository.isUniqueEmail(email);
+    }
 }
