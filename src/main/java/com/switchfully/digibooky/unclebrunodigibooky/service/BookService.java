@@ -19,13 +19,21 @@ public class BookService {
     public List<Book> getAllBooks() {
         return bookRepository.getAllBooks();
     }
-    public Book getOneBook(String isbn){
-        for(Book book : bookRepository.getAllBooks()){
-            if(book.getIsbn().equals(isbn)){
+
+    public Book getOneBook(String isbn) {
+        for (Book book : bookRepository.getAllBooks()) {
+            if (book.getIsbn().equals(isbn)) {
                 return book;
             }
         }
         throw new IsbnDoesNotExistException("The isbn does not exist");
     }
 
+    public List<Book> searchBookByISBN(String isbn) {
+        // input = string of characters , should be digits only to comply with ISBN13
+        return bookRepository.getAllBooks().stream()
+                .filter(book -> book.getIsbn().contains(isbn))
+                .toList();
+
+    }
 }
