@@ -1,6 +1,4 @@
-package com.switchfully.digibooky.unclebrunodigibooky.api.dto;
-
-import com.switchfully.digibooky.unclebrunodigibooky.domain.Author;
+package com.switchfully.digibooky.unclebrunodigibooky.domain.book;
 
 public class BookDto {
     private final String id;

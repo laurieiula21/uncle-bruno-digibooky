@@ -1,6 +1,6 @@
 package com.switchfully.digibooky.unclebrunodigibooky.service;
 
-import com.switchfully.digibooky.unclebrunodigibooky.domain.Book;
+import com.switchfully.digibooky.unclebrunodigibooky.domain.book.Book;
 import com.switchfully.digibooky.unclebrunodigibooky.repository.BookRepository;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +17,7 @@ public class BookService {
     public List<Book> getAllBooks() {
         return bookRepository.getAllBooks();
     }
+
     public Book showDetailsOfBook(String isbn){
         for(Book b : bookRepository.getAllBooks()){
             if(b.getIsbn().equals(isbn)){

@@ -1,7 +1,7 @@
 package com.switchfully.digibooky.unclebrunodigibooky.api.mapper;
 
-import com.switchfully.digibooky.unclebrunodigibooky.api.dto.BookDto;
-import com.switchfully.digibooky.unclebrunodigibooky.domain.Book;
+import com.switchfully.digibooky.unclebrunodigibooky.domain.book.BookDto;
+import com.switchfully.digibooky.unclebrunodigibooky.domain.book.Book;
 import org.springframework.stereotype.Component;
 
 @Component

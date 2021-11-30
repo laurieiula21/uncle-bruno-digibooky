@@ -1,12 +1,6 @@
 package com.switchfully.digibooky.unclebrunodigibooky.repository;
 
-import com.switchfully.digibooky.unclebrunodigibooky.domain.Author;
-import com.switchfully.digibooky.unclebrunodigibooky.domain.Book;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import java.util.List;
 
 class BookRepositoryTest {
     BookRepository bookRepository;
