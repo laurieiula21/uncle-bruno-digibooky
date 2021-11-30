@@ -1,4 +1,4 @@
-package com.switchfully.digibooky.unclebrunodigibooky.domain;
+package com.switchfully.digibooky.unclebrunodigibooky.domain.book;
 
 import java.util.UUID;
 
@@ -23,5 +23,14 @@ public class Author {
 
     public String getFirstName() {
         return firstName;
+    }
+
+    @Override
+    public String toString() {
+        return "Author{" +
+                "firstName='" + firstName + '\'' +
+                ", id='" + id + '\'' +
+                ", lastName='" + lastName + '\'' +
+                '}';
     }
 }

@@ -1,7 +1,7 @@
 package com.switchfully.digibooky.unclebrunodigibooky.repository;
 
-import com.switchfully.digibooky.unclebrunodigibooky.domain.Author;
-import com.switchfully.digibooky.unclebrunodigibooky.domain.Book;
+import com.switchfully.digibooky.unclebrunodigibooky.domain.book.Author;
+import com.switchfully.digibooky.unclebrunodigibooky.domain.book.Book;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;

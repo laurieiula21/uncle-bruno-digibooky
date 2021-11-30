@@ -1,4 +1,4 @@
-package com.switchfully.digibooky.unclebrunodigibooky.domain;
+package com.switchfully.digibooky.unclebrunodigibooky.domain.book;
 
 import java.util.UUID;
 
@@ -40,5 +40,6 @@ public class Book {
     @Override
     public String toString(){
         return isbn+"\n"+title+"\n"+author+"\n"+summary;
+
     }
 }
