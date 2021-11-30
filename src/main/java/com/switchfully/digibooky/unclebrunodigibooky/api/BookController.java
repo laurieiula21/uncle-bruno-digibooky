@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -47,5 +48,13 @@ public class BookController {
         Book book = bookService.getOneBook(isbn);
         BookDto bookDto = bookMapper.mapBookToDto(book);
         return bookDto;
+    }
+
+    @GetMapping(produces = "application/json", params = "isbn")
+    @ResponseStatus(HttpStatus.OK)
+    public List<BookDto> search(@RequestParam String isbn) {
+           return bookService.searchBookByISBN(isbn).stream()
+                    .map(bookMapper::mapBookToDto)
+                    .toList();
     }
 }

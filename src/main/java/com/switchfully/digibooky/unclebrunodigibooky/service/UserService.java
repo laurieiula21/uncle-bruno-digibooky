@@ -1,6 +1,5 @@
 package com.switchfully.digibooky.unclebrunodigibooky.service;
 
-import com.switchfully.digibooky.unclebrunodigibooky.domain.exceptions.UserNotAddedException;
 import com.switchfully.digibooky.unclebrunodigibooky.domain.user.User;
 import com.switchfully.digibooky.unclebrunodigibooky.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +17,14 @@ public class UserService {
 
     public User saveUser(User user){
         boolean isAdded = userRepository.addUser(user);
-        if(isAdded){
-            return user;
-        }
-        throw new UserNotAddedException("The user was not added to the list");
+        return user;
+    }
+
+    public boolean isUniqueInss(String inss) {
+        return userRepository.isUniqueInss(inss);
+    }
+
+    public boolean isUniqueEmail(String email) {
+        return userRepository.isUniqueEmail(email);
     }
 }

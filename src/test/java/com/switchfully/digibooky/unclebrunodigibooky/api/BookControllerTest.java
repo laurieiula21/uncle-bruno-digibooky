@@ -1,5 +1,6 @@
 package com.switchfully.digibooky.unclebrunodigibooky.api;
 
+import com.switchfully.digibooky.unclebrunodigibooky.domain.book.Author;
 import com.switchfully.digibooky.unclebrunodigibooky.api.mapper.BookMapper;
 import com.switchfully.digibooky.unclebrunodigibooky.domain.book.Author;
 import com.switchfully.digibooky.unclebrunodigibooky.domain.book.Book;
@@ -22,14 +23,6 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 class BookControllerTest {
 
-    BookRepository bookRepository;
-    BookService bookService;
-
-    @BeforeEach
-    void setup() {
-        bookRepository = new BookRepository();
-        bookService = new BookService(bookRepository);
-    }
 
     @Value("${server.port}")
     private int port;
@@ -38,6 +31,22 @@ class BookControllerTest {
     void givenAnExistingRepository_whenGettingAllBooks_thenReceiveHttpStatusOKAndListOfBooks() {
 
         List<BookDto> bookDtoList = new ArrayList<>();
+        bookDtoList.add(new BookDto()
+                .setTitle("Title 1")
+                .setAuthor(new Author("First", "Last"))
+                .setIsbn("isbn1")
+                .setSummary("This is the summary of 69"));
+        bookDtoList.add(new BookDto()
+                .setTitle("Title 2")
+                .setAuthor(new Author("Second", "Last"))
+                .setIsbn("isbn2")
+                .setSummary("This is the summary of 69"));
+        bookDtoList.add(new BookDto()
+                .setTitle("Title 3")
+                .setAuthor(new Author("Third", "Last"))
+                .setIsbn("isbn3")
+                .setSummary("This is the summary of 69"));
+
         List<BookDto> bookList =
                 RestAssured
                         .given()
@@ -48,16 +57,27 @@ class BookControllerTest {
                         .assertThat()
                         .statusCode(HttpStatus.OK.value())
                         .extract()
-                        .as(bookDtoList.getClass());
-        System.out.println(bookList);
+                        .body()
+                        .jsonPath()
+                        .getList(".", BookDto.class);
 
-        assertThat(bookRepository.getAllBooks().size()).isEqualTo(bookList.size());
+        System.out.println(bookList);
+        System.out.println(bookDtoList);
+
+        assertThat(bookDtoList).containsAll(bookList);
+
+
     }
 
     @Test
     void GivenAnISBN_WhenGettingOneBook_ThenReceiveHttpStatusOKAndSaidSpecificBook() {
         Book book = new Book("isbn1", "Title 1", new Author("First", "Last"), "This is the summary of 69");
-        BookDto expectedBookDto = new BookMapper().mapBookToDto(book);
+        BookDto expectedBookDto = new BookDto()
+                .setTitle("Title 1")
+                .setAuthor(new Author("First", "Last"))
+                .setIsbn("isbn1")
+                .setSummary("This is the summary of 69");
+
         BookDto actualBookDto =
                 RestAssured
                         .given()
@@ -78,10 +98,7 @@ class BookControllerTest {
 
     }
 
-    @Test
-    void GivenANotExistingISBN_WhenGettingOneBook_ThenThrowAnException() {
-        assertThatExceptionOfType(IsbnDoesNotExistException.class).isThrownBy(() -> bookService.getOneBook("wrongISBN)"));
-    }
+
 }
 
 
