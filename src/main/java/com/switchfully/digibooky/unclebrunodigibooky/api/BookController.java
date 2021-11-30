@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -40,11 +41,11 @@ public class BookController {
         return bookDtoList;
     }
 
-    @GetMapping(path="/{isbn}", produces = "application/json")
+    @GetMapping(path = "/{isbn}", produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
-    public Book getBook(@PathVariable("isbn") String isbn) {
-        return bookService.showDetailsOfBook(isbn);
+    public BookDto getBook(@PathVariable("isbn") String isbn) {
+        Book book = bookService.getOneBook(isbn);
+        BookDto bookDto = bookMapper.mapBookToDto(book);
+        return bookDto;
     }
-
-
 }
