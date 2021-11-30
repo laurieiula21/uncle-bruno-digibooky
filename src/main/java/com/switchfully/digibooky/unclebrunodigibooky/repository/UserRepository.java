@@ -24,10 +24,12 @@ public class UserRepository {
     }
 
     public boolean isUniqueInss(String inss) {
-        return !userList.stream().anyMatch(user -> user.getInss().equals(inss));
+        return userList.stream()
+                .noneMatch(user -> user.getInss().equals(inss));
     }
 
     public boolean isUniqueEmail(String email) {
-        return !userList.stream().anyMatch(user -> user.getEmail().equals(email));
+        return userList.stream()
+                .noneMatch(user -> user.getEmail().equals(email));
     }
 }

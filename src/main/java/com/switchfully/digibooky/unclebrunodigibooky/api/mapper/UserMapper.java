@@ -3,6 +3,7 @@ package com.switchfully.digibooky.unclebrunodigibooky.api.mapper;
 import com.switchfully.digibooky.unclebrunodigibooky.domain.exceptions.UserMapperException;
 import com.switchfully.digibooky.unclebrunodigibooky.domain.user.User;
 import com.switchfully.digibooky.unclebrunodigibooky.domain.user.UserDto;
+import com.switchfully.digibooky.unclebrunodigibooky.domain.user.UserRole;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -11,7 +12,7 @@ public class UserMapper {
     public User mapToUser(UserDto userDto){
         User user = new User(userDto.getInss(), userDto.getFirstName(),
                 userDto.getLastName(), userDto.getEmail(),
-                userDto.getAddress(), userDto.getUserRole());
+                userDto.getAddress(), UserRole.valueOf(userDto.getUserRole()));
         return user;
     }
 
@@ -23,7 +24,7 @@ public class UserMapper {
                 .setLastName(user.getLastName())
                 .setEmail(user.getEmail())
                 .setAddress(user.getAddress())
-                .setUserRole(user.getUserRole());
+                .setUserRole(user.getUserRole().toString());
         return userDto;
     }
 }

@@ -2,6 +2,7 @@ package com.switchfully.digibooky.unclebrunodigibooky.api;
 
 import com.switchfully.digibooky.unclebrunodigibooky.domain.exceptions.InvalidUserException;
 import com.switchfully.digibooky.unclebrunodigibooky.domain.user.UserDto;
+import com.switchfully.digibooky.unclebrunodigibooky.domain.user.UserRole;
 import com.switchfully.digibooky.unclebrunodigibooky.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -22,10 +23,19 @@ public class UserValidator {
                 !isValidEmail(userDto.getEmail()) ||
                 userDto.getAddress() == null ||
                 userDto.getAddress().getCityName() == null ||
-                userDto.getUserRole() == null){
+                !isValidUserRole(userDto.getUserRole())){
             throw new InvalidUserException("User information given is not valid.");
         }
         return userDto;
+    }
+
+    private boolean isValidUserRole(String userRole) {
+        try {
+            UserRole.valueOf(userRole);
+            return userRole != null;
+        } catch (Exception exception){
+            return false;
+        }
     }
 
     private boolean isValidInss(String inss){
