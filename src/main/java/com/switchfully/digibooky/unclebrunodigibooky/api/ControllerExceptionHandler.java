@@ -1,6 +1,7 @@
 package com.switchfully.digibooky.unclebrunodigibooky.api;
 
 import com.switchfully.digibooky.unclebrunodigibooky.domain.exceptions.InvalidUserException;
+import com.switchfully.digibooky.unclebrunodigibooky.domain.exceptions.IsbnDoesNotExistException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
