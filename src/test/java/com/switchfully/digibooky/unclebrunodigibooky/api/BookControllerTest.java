@@ -35,7 +35,7 @@ class BookControllerTest {
     private int port;
 
     @Test
-    void givenAnExistingRepository_whenGettingAllBooks_thenReceiveHttpStatusOKAndListOfBooks(){
+    void givenAnExistingRepository_whenGettingAllBooks_thenReceiveHttpStatusOKAndListOfBooks() {
 
         List<BookDto> bookDtoList = new ArrayList<>();
         bookDtoList.add(new BookDto()
@@ -74,13 +74,17 @@ class BookControllerTest {
         assertThat(bookDtoList).containsAll(bookList);
 
 
-
     }
 
     @Test
     void GivenAnISBN_WhenGettingOneBook_ThenReceiveHttpStatusOKAndSaidSpecificBook() {
         Book book = new Book("isbn1", "Title 1", new Author("First", "Last"), "This is the summary of 69");
-        BookDto expectedBookDto = new BookMapper().mapBookToDto(book);
+        BookDto expectedBookDto = new BookDto()
+                .setTitle("Title 1")
+                .setAuthor(new Author("First", "Last"))
+                .setIsbn("isbn1")
+                .setSummary("This is the summary of 69");
+
         BookDto actualBookDto =
                 RestAssured
                         .given()
@@ -101,10 +105,7 @@ class BookControllerTest {
 
     }
 
-/*    @Test
-    void GivenANotExistingISBN_WhenGettingOneBook_ThenThrowAnException() {
-        assertThatExceptionOfType(IsbnDoesNotExistException.class).isThrownBy(() -> bookService.getOneBook("wrongISBN)"));
-    }*/
+
 }
 
 

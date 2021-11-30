@@ -1,6 +1,6 @@
 package com.switchfully.digibooky.unclebrunodigibooky.service;
 
-import com.switchfully.digibooky.unclebrunodigibooky.api.IsbnDoesNotExistException;
+import com.switchfully.digibooky.unclebrunodigibooky.domain.exceptions.IsbnDoesNotExistException;
 import com.switchfully.digibooky.unclebrunodigibooky.domain.book.Book;
 import com.switchfully.digibooky.unclebrunodigibooky.repository.BookRepository;
 import org.springframework.stereotype.Service;
