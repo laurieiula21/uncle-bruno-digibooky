@@ -10,6 +10,7 @@ import com.switchfully.digibooky.unclebrunodigibooky.domain.user.UserRole;
 import com.switchfully.digibooky.unclebrunodigibooky.repository.BookRepository;
 import com.switchfully.digibooky.unclebrunodigibooky.service.BookService;
 import io.restassured.RestAssured;
+import org.hamcrest.core.Is;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,6 +23,7 @@ import java.util.List;
 
 import static io.restassured.http.ContentType.JSON;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
@@ -81,6 +83,11 @@ class BookControllerTest {
         assertThat(actualBookDto.getAuthor().getLastName()).isEqualTo(expectedBookDto.getAuthor().getLastName());
         assertThat(actualBookDto.getSummary()).isEqualTo(expectedBookDto.getSummary());
 
+    }
+
+    @Test
+    void GivenANotExistingISBN_WhenGettingOneBook_ThenThrowAnException() {
+        assertThatExceptionOfType(IsbnDoesNotExistException.class).isThrownBy(() -> bookService.getOneBook("wrongISBN)"));
     }
 }
 
