@@ -16,19 +16,22 @@ public class UserController {
     private final UserService userService;
     private final AuthorisationService authorisationService;
     private final UserMapper userMapper;
+    private final UserValidator userValidator;
 
     @Autowired
-    public UserController(UserService userService, AuthorisationService authorisationService, UserMapper userMapper) {
+    public UserController(UserService userService, AuthorisationService authorisationService, UserMapper userMapper, UserValidator userValidator) {
         this.userService = userService;
         this.authorisationService = authorisationService;
         this.userMapper = userMapper;
+        this.userValidator = userValidator;
     }
 
 
     @PostMapping(consumes = "application/json", produces = "application/json")
     @ResponseStatus(HttpStatus.CREATED)
     public UserDto registerUser(@RequestBody UserDto userDto){
-        User user = userMapper.mapToUser(userDto);
+        UserDto validatedUserDto = userValidator.validate(userDto);
+        User user = userMapper.mapToUser(validatedUserDto);
         User savedUser = userService.saveUser(user);
         return userMapper.mapToUserDto(savedUser);
     }

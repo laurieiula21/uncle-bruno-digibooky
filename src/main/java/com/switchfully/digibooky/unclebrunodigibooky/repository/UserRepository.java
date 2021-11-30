@@ -22,4 +22,12 @@ public class UserRepository {
     public boolean addUser(User user){
         return userList.add(user);
     }
+
+    public boolean isUniqueInss(String inss) {
+        return !userList.stream().anyMatch(user -> user.getInss().equals(inss));
+    }
+
+    public boolean isUniqueEmail(String email) {
+        return !userList.stream().anyMatch(user -> user.getEmail().equals(email));
+    }
 }

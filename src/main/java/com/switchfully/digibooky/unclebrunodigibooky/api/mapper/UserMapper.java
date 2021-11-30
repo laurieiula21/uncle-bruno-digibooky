@@ -1,5 +1,6 @@
 package com.switchfully.digibooky.unclebrunodigibooky.api.mapper;
 
+import com.switchfully.digibooky.unclebrunodigibooky.domain.exceptions.UserMapperException;
 import com.switchfully.digibooky.unclebrunodigibooky.domain.user.User;
 import com.switchfully.digibooky.unclebrunodigibooky.domain.user.UserDto;
 import org.springframework.stereotype.Component;
@@ -7,13 +8,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class UserMapper {
 
-
     public User mapToUser(UserDto userDto){
-        if(userDto != null){
-            User user = new User(userDto.getInss(), userDto.getFirstName(), userDto.getLastName(), userDto.getEmail(), userDto.getAddress(), userDto.getUserRole());
-            return user;
-        }
-        throw new IllegalArgumentException("User is null");
+        User user = new User(userDto.getInss(), userDto.getFirstName(),
+                userDto.getLastName(), userDto.getEmail(),
+                userDto.getAddress(), userDto.getUserRole());
+        return user;
     }
 
     public UserDto mapToUserDto(User user){
@@ -26,6 +25,5 @@ public class UserMapper {
                 .setAddress(user.getAddress())
                 .setUserRole(user.getUserRole());
         return userDto;
-
     }
 }

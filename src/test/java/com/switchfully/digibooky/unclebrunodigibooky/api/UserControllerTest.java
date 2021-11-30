@@ -3,17 +3,15 @@ package com.switchfully.digibooky.unclebrunodigibooky.api;
 import com.switchfully.digibooky.unclebrunodigibooky.domain.Address;
 import com.switchfully.digibooky.unclebrunodigibooky.domain.user.UserDto;
 import com.switchfully.digibooky.unclebrunodigibooky.domain.user.UserRole;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import io.restassured.RestAssured;
 
-import java.net.http.HttpResponse;
-
 import static io.restassured.http.ContentType.JSON;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.containsString;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 class UserControllerTest {
@@ -23,7 +21,7 @@ class UserControllerTest {
 
     @Test
     void createUserMember_givenAUserMemberToCreate_thenTheNewlyCreatedUserMemberIsSavedAndReturned() {
-        Address myAddress = new Address("Vaartstraat",61,3000,"Leuven");
+        Address myAddress = new Address("Vaartstraat", 61, 3000, "Leuven");
 
         UserDto createUserMemberDto = new UserDto()
                 .setInss("680-60-1053")
@@ -59,10 +57,12 @@ class UserControllerTest {
     }
 
     @Test
-    void createUserMember_givenNullUserToCreate_thenIllegalArgumentExceptionIsThrown() {
+    void createUserMember_givenEmptyUserToCreate_thenBadRequestResponseIsGivenWithMessage() {
+        UserDto emptyUserDto = new UserDto();
 
-        RestAssured
+        String message = RestAssured
                 .given()
+                .body(emptyUserDto)
                 .accept(JSON)
                 .contentType(JSON)
                 .when()
@@ -71,7 +71,9 @@ class UserControllerTest {
                 .then()
                 .assertThat()
                 .statusCode(HttpStatus.BAD_REQUEST.value())
-                .body(containsString("User is null"));
+                .extract().path("message");
+
+        Assertions.assertThat(message).isEqualTo("User information given is not valid.");
 
     }
 }
