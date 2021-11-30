@@ -1,18 +1,35 @@
 package com.switchfully.digibooky.unclebrunodigibooky.domain.book;
 
 public class BookDto {
-    private final String id;
-    private final String isbn;
-    private final String title;
-    private final Author author;
-    private final String summary;
+    private String id;
+    private String isbn;
+    private String title;
+    private Author author;
+    private String summary;
 
-    public BookDto(String id, String isbn, String title, Author author, String summary) {
+    public BookDto setId(String id) {
         this.id = id;
+        return this;
+    }
+
+    public BookDto setIsbn(String isbn) {
         this.isbn = isbn;
+        return this;
+    }
+
+    public BookDto setTitle(String title) {
         this.title = title;
+        return this;
+    }
+
+    public BookDto setAuthor(Author author) {
         this.author = author;
+        return this;
+    }
+
+    public BookDto setSummary(String summary) {
         this.summary = summary;
+        return this;
     }
 
     public String getId() {
@@ -34,4 +51,6 @@ public class BookDto {
     public String getSummary() {
         return summary;
     }
+
+
 }

@@ -24,4 +24,13 @@ public class Author {
     public String getFirstName() {
         return firstName;
     }
+
+    @Override
+    public String toString() {
+        return "Author{" +
+                "firstName='" + firstName + '\'' +
+                ", id='" + id + '\'' +
+                ", lastName='" + lastName + '\'' +
+                '}';
+    }
 }
