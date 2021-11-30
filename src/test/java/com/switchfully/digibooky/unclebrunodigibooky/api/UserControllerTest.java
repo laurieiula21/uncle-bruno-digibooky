@@ -3,6 +3,7 @@ package com.switchfully.digibooky.unclebrunodigibooky.api;
 import com.switchfully.digibooky.unclebrunodigibooky.domain.Address;
 import com.switchfully.digibooky.unclebrunodigibooky.domain.user.UserDto;
 import com.switchfully.digibooky.unclebrunodigibooky.domain.user.UserRole;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,7 +21,7 @@ class UserControllerTest {
 
     @Test
     void createUserMember_givenAUserMemberToCreate_thenTheNewlyCreatedUserMemberIsSavedAndReturned() {
-        Address myAddress = new Address("Vaartstraat",61,3000,"Leuven");
+        Address myAddress = new Address("Vaartstraat", 61, 3000, "Leuven");
 
         UserDto createUserMemberDto = new UserDto()
                 .setInss("680-60-1053")
@@ -55,4 +56,24 @@ class UserControllerTest {
 
     }
 
+    @Test
+    void createUserMember_givenEmptyUserToCreate_thenBadRequestResponseIsGivenWithMessage() {
+        UserDto emptyUserDto = new UserDto();
+
+        String message = RestAssured
+                .given()
+                .body(emptyUserDto)
+                .accept(JSON)
+                .contentType(JSON)
+                .when()
+                .port(port)
+                .post("/users")
+                .then()
+                .assertThat()
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .extract().path("message");
+
+        Assertions.assertThat(message).isEqualTo("User information given is not valid.");
+
+    }
 }
