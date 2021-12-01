@@ -17,7 +17,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,7 +40,8 @@ public class BookController {
 
     @GetMapping(produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
-    public List<BookDto> getAllBooks() {
+    public List<BookDto> getAllBooks(@RequestHeader(required = false) String authorization) {
+        authorisationService.validateAuthorisation(DigibookyFeature.GET_ALL_BOOKS, authorization);
         List<Book> bookList = bookService.getAllBooks();
         List<BookDto> bookDtoList = bookList.stream()
                 .map(bookMapper::mapBookToDto)

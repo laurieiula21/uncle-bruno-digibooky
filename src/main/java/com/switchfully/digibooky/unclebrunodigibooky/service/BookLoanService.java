@@ -26,7 +26,7 @@ public class BookLoanService {
         return bookLoanRepository.getBookLoanList();
     }
 
-    public void lendBook(String isbn, String validUserId) {
+    public String lendBook(String isbn, String validUserId) {
         String bookId = bookService.getOneBook(isbn).getId();
         if (!isBookAvailable(bookId)) {
             throw new BookNotAvailableException("The book with isbn: " + isbn + " is not available anymore.");
@@ -36,20 +36,21 @@ public class BookLoanService {
         LocalDate returnDate = LocalDate.now().plusWeeks(3);
         BookLoan bookLoan = new BookLoan(bookId, userId, lentOutDate, returnDate);
         bookLoanRepository.addBookLoan(bookLoan);
+        return bookLoan.getLoanId();
     }
 
     public boolean isBookAvailable(String bookId) {
         return getAllBookLoans().stream().noneMatch(loan -> loan.getBookId().equals(bookId));
     }
 
-    public String returnBook(String bookId) {
-        BookLoan bookLoan = bookLoanRepository.removeBookLoanBy(bookId);
+    public String returnBook(String bookLoanId) {
+        BookLoan bookLoan = bookLoanRepository.removeBookLoanBy(bookLoanId);
+        bookLoanHistoryRepository.addBookLoan(bookLoan);
         if (bookLoan.getReturnDate().isAfter(LocalDate.now())) {
             //Add late fine
             return "Book too late";
         }
         // check for damage fine
-        bookLoanHistoryRepository.addBookLoan(bookLoan);
-        return bookLoan.getBookId();
+        return bookLoan.getLoanId();
     }
 }
