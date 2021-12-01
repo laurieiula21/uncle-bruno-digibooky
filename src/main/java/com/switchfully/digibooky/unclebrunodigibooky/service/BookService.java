@@ -7,6 +7,7 @@ import com.switchfully.digibooky.unclebrunodigibooky.repository.BookRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 
 @Service
@@ -35,6 +36,7 @@ public class BookService {
 
     /**
      * Story 3
+     *
      * @param isbn - isbn number
      * @return list of books containing (part of) isbn
      */
@@ -44,5 +46,12 @@ public class BookService {
                 .filter(book -> book.getIsbn().contains(isbn))
                 .toList();
 
+    }
+
+    public Book getBookBy(String bookId) {
+        return bookRepository.getAllBooks().stream()
+                .filter(book -> book.getId().equals(bookId))
+                .findFirst()
+                .orElseThrow(() -> new NoSuchElementException("No book with id: " + bookId + " found"));
     }
 }

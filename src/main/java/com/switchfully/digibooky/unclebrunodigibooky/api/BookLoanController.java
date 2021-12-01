@@ -1,6 +1,8 @@
 package com.switchfully.digibooky.unclebrunodigibooky.api;
 
 import com.switchfully.digibooky.unclebrunodigibooky.domain.DigibookyFeature;
+import com.switchfully.digibooky.unclebrunodigibooky.domain.book.Book;
+import com.switchfully.digibooky.unclebrunodigibooky.domain.bookloan.BookLoan;
 import com.switchfully.digibooky.unclebrunodigibooky.domain.bookloan.CreateBookLoanDto;
 import com.switchfully.digibooky.unclebrunodigibooky.service.AuthorisationService;
 import com.switchfully.digibooky.unclebrunodigibooky.service.BookLoanService;
@@ -9,6 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping(path = "/bookloans")
@@ -45,4 +49,15 @@ public class BookLoanController {
         myLogger.info("Returning book successful.");
         return message;
     }
+
+    @GetMapping(produces = "application/json")
+    @ResponseStatus(HttpStatus.OK)
+    public List<Book> getAllBorrowedBooksBy(@RequestParam String userId, @RequestHeader(required = false) String authorization){
+        myLogger.info("Borrowed books by user with id: " + userId + " .");
+        authorisationService.validateAuthorisation(DigibookyFeature.GET_ALL_BORROWED_BOOKS_OF_USER, authorization);
+        List<Book> booksBorrowedByUser = bookLoanService.getBooksBorrowedBy(userId);
+        myLogger.info("Returning borrowed books of user successful.");
+        return booksBorrowedByUser;
+    }
+
 }
