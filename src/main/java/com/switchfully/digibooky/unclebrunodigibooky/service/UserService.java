@@ -1,6 +1,7 @@
 package com.switchfully.digibooky.unclebrunodigibooky.service;
 
 import com.switchfully.digibooky.unclebrunodigibooky.domain.user.User;
+import com.switchfully.digibooky.unclebrunodigibooky.domain.user.UserRole;
 import com.switchfully.digibooky.unclebrunodigibooky.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,7 +17,7 @@ public class UserService {
     }
 
     public User saveUser(User user){
-        boolean isAdded = userRepository.addUser(user);
+        userRepository.saveUser(user);
         return user;
     }
 
@@ -29,6 +30,12 @@ public class UserService {
     }
 
     public User registerUserAsLibrarian(User memberUser) {
-        return memberUser;
+        User librarian = memberUser.setUserRole(UserRole.LIBRARIAN);
+        User savedLibrarian = saveUser(librarian);
+        return savedLibrarian;
+    }
+
+    public User getUserById(String id){
+        return userRepository.getUserById(id);
     }
 }

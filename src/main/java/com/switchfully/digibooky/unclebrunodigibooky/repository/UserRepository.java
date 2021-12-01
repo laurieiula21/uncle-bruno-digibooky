@@ -19,7 +19,8 @@ public class UserRepository {
         this.userList = userList;
     }
 
-    public boolean addUser(User user){
+    public boolean saveUser(User user){
+        userList.removeIf(member -> member.getId().equals(user.getId()));
         return userList.add(user);
     }
 
@@ -31,5 +32,16 @@ public class UserRepository {
     public boolean isUniqueEmail(String email) {
         return userList.stream()
                 .noneMatch(user -> user.getEmail().equals(email));
+    }
+
+    public List<User> getUserList() {
+        return userList;
+    }
+
+    public User getUserById(String id) {
+        return userList.stream()
+                .filter(user -> user.getId().equals(id))
+                .findFirst()
+                .get();
     }
 }
