@@ -3,17 +3,18 @@ package com.switchfully.digibooky.unclebrunodigibooky.service;
 import com.switchfully.digibooky.unclebrunodigibooky.domain.exceptions.IsbnDoesNotExistException;
 import com.switchfully.digibooky.unclebrunodigibooky.domain.book.Book;
 import com.switchfully.digibooky.unclebrunodigibooky.repository.BookRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
 
 @Service
 public class BookService {
 
     private final BookRepository bookRepository;
 
-    @Autowired
+
     public BookService(BookRepository bookRepository) {
         this.bookRepository = bookRepository;
     }
@@ -23,6 +24,7 @@ public class BookService {
     }
 
     public Book getOneBook(String isbn) {
+        //Story 2
         for (Book book : bookRepository.getAllBooks()) {
             if (book.getIsbn().equals(isbn)) {
                 return book;
@@ -32,7 +34,7 @@ public class BookService {
     }
 
     public List<Book> searchBookByISBN(String isbn) {
-        // input = string of characters , should be digits only to comply with ISBN13
+        //Story 3
         return bookRepository.getAllBooks().stream()
                 .filter(book -> book.getIsbn().contains(isbn))
                 .toList();
