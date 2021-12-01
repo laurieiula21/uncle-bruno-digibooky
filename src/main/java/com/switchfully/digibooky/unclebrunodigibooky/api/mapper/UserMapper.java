@@ -27,4 +27,16 @@ public class UserMapper {
                 .setUserRole(user.getUserRole().toString());
         return userDto;
     }
+
+    public UserDto mapToUserDtoWithoutInss(User user){
+        UserDto userDto = new UserDto()
+                .setId(user.getId())
+                .setFirstName(user.getFirstName())
+                .setLastName(user.getLastName())
+                .setEmail(user.getEmail())
+                .setAddress(user.getAddress())
+                .setUserRole(user.getUserRole().toString());
+        return userDto;
+    }
+
 }

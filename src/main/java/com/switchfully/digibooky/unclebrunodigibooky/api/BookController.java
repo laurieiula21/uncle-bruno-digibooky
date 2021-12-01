@@ -4,6 +4,8 @@ import com.switchfully.digibooky.unclebrunodigibooky.domain.DigibookyFeature;
 import com.switchfully.digibooky.unclebrunodigibooky.domain.book.BookDto;
 import com.switchfully.digibooky.unclebrunodigibooky.api.mapper.BookMapper;
 import com.switchfully.digibooky.unclebrunodigibooky.domain.book.Book;
+import com.switchfully.digibooky.unclebrunodigibooky.domain.user.UserDto;
+import com.switchfully.digibooky.unclebrunodigibooky.domain.user.UserRole;
 import com.switchfully.digibooky.unclebrunodigibooky.service.AuthorisationService;
 import com.switchfully.digibooky.unclebrunodigibooky.service.BookService;
 import org.slf4j.Logger;
@@ -55,6 +57,12 @@ public class BookController {
         return bookDto;
     }
 
+    /**
+     * Story 3
+     *
+     * @param isbn
+     * @return list of books containing (part of) isbn
+     */
     @GetMapping(produces = "application/json", params = "isbn")
     @ResponseStatus(HttpStatus.OK)
     public List<BookDto> search(@RequestParam String isbn) {
@@ -62,5 +70,19 @@ public class BookController {
         return bookService.searchBookByISBN(isbn).stream()
                 .map(bookMapper::mapBookToDto)
                 .toList();
+    }
+
+    /**
+     * @param bookDto
+     * @param authorization return : adds a book to the list of books
+     */
+    @PostMapping(consumes = "application/json", produces = "application/json")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void registerNewBook(@RequestBody BookDto bookDto, @RequestHeader(required = false) String authorization) {
+        myLogger.info("RegisterNewBook Method called");
+        authorisationService.validateAuthorisation(DigibookyFeature.REGISTER_NEW_BOOK, authorization);
+        Book book = bookMapper.mapBookDtoToBook(bookDto);
+        bookService.registerBook(book);
+        myLogger.info("RegisterNewBook Method successfully ended");
     }
 }

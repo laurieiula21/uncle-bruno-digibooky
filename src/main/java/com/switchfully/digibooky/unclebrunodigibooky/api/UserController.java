@@ -12,8 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.Collection;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/users")
@@ -58,4 +58,18 @@ public class UserController {
         return userDto;
     }
 
+    @GetMapping(produces = "application/json")
+    @ResponseStatus(HttpStatus.OK)
+    public Collection<UserDto> getAllUsers(@RequestHeader(required = false) String authorization){
+
+        myLogger.info("Get all users method called");
+        authorisationService.validateAuthorisation(DigibookyFeature.GET_ALL_USERS,authorization);
+
+        Collection<UserDto> users = userService.getUsers().stream()
+                .map(userMapper::mapToUserDtoWithoutInss)
+                .collect(Collectors.toList());
+        myLogger.info("Get all users method succesfully concluded");
+        return users;
+
+    }
 }

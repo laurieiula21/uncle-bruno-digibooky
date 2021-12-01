@@ -54,4 +54,12 @@ public class BookService {
                 .findFirst()
                 .orElseThrow(() -> new NoSuchElementException("No book with id: " + bookId + " found"));
     }
+
+    public void registerBook(Book book) {
+        bookRepository.addBook(book);
+    }
+
+    public List<Book> getBooksWithTitle(String myTitle) {
+        return null;
+    }
 }
