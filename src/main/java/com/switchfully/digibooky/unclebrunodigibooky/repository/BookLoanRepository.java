@@ -23,9 +23,9 @@ public class BookLoanRepository {
     }
 
 
-    public BookLoan removeBookLoanBy(String bookId) {
+    public BookLoan removeBookLoanBy(String bookLoanId) {
         BookLoan bookLoan = bookLoanList.stream()
-                .filter(bookloan -> bookloan.getBookId().equals(bookId))
+                .filter(bookloan -> bookloan.getLoanId().equals(bookLoanId))
                 .findFirst()
                 .orElseGet(null);
         bookLoanList.remove(bookLoan);

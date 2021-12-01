@@ -1,6 +1,7 @@
 package com.switchfully.digibooky.unclebrunodigibooky.service;
 
 import com.switchfully.digibooky.unclebrunodigibooky.domain.book.Book;
+import com.switchfully.digibooky.unclebrunodigibooky.domain.bookloan.BookLoan;
 import com.switchfully.digibooky.unclebrunodigibooky.domain.exceptions.BookNotAvailableException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -63,22 +64,18 @@ class BookLoanServiceTest {
     @Test
     void givenABookIdThatIsInTheLoanRepository_whenTryingToRemoveThatBook_thenBookIsNotInTheRepository() {
         // given
-        bookLoanService.lendBook("isbn3", "userIdToFind");
-        List<Book> booksWithIsbn1 = bookService.searchBookByISBN("isbn3");
-        Book bookWithId = booksWithIsbn1.stream()
-                .filter(book -> !bookLoanService.isBookAvailable(book.getId()))
-                .findFirst()
-                .orElse(null);
+        String bookLoanId = bookLoanService.lendBook("isbn3", "userIdToFind");
 
         // when
-        bookLoanService.returnBook(bookWithId.getId());
+        bookLoanService.returnBook(bookLoanId);
 
         // then
-        bookWithId = booksWithIsbn1.stream()
-                .filter(book -> !bookLoanService.isBookAvailable(book.getId()))
+        BookLoan bookLoan = bookLoanService.getAllBookLoans().stream()
+                .filter(loan -> loan.getLoanId().equals(bookLoanId))
                 .findFirst()
                 .orElse(null);
-        Assertions.assertThat(bookWithId).isNull();
+
+        Assertions.assertThat(bookLoan).isNull();
     }
 
 
