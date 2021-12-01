@@ -1,13 +1,13 @@
 package com.switchfully.digibooky.unclebrunodigibooky.service;
 
+import com.switchfully.digibooky.unclebrunodigibooky.api.mapper.BookMapper;
 import com.switchfully.digibooky.unclebrunodigibooky.domain.book.Book;
+import com.switchfully.digibooky.unclebrunodigibooky.domain.book.BookDto;
 import com.switchfully.digibooky.unclebrunodigibooky.domain.bookloan.BookLoan;
 import com.switchfully.digibooky.unclebrunodigibooky.domain.exceptions.BookNotAvailableException;
 import com.switchfully.digibooky.unclebrunodigibooky.repository.BookLoanHistoryRepository;
 import com.switchfully.digibooky.unclebrunodigibooky.repository.BookLoanRepository;
-import org.apache.tomcat.jni.Local;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -19,11 +19,13 @@ public class BookLoanService {
     private final BookLoanRepository bookLoanRepository;
     private final BookLoanHistoryRepository bookLoanHistoryRepository;
     private final BookService bookService;
+    private final BookMapper bookMapper;
 
-    public BookLoanService(BookLoanRepository bookLoanRepository, BookLoanHistoryRepository bookLoanHistoryRepository, BookService bookService) {
+    public BookLoanService(BookLoanRepository bookLoanRepository, BookLoanHistoryRepository bookLoanHistoryRepository, BookService bookService, BookMapper bookMapper) {
         this.bookLoanRepository = bookLoanRepository;
         this.bookLoanHistoryRepository = bookLoanHistoryRepository;
         this.bookService = bookService;
+        this.bookMapper = bookMapper;
     }
 
     public List<BookLoan> getAllBookLoans() {
