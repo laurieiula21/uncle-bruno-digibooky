@@ -64,8 +64,9 @@ public class BookService {
 
 
     public Collection<Book> searchBooksByTitle(String title) {
+
         return bookRepository.getAllBooks().stream()
-                .filter(book -> book.getTitle().equals(title))
+                .filter(book -> book.getTitle().matches(title))
                 .collect(Collectors.toList());
     }
     public List<Book> searchBookByAuthor(String authorName) {

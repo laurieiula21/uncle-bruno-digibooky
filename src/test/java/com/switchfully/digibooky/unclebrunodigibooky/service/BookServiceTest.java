@@ -83,10 +83,10 @@ class BookServiceTest {
     }
 
     @Test
-    void givenBookWithTitleInList_whenSearchingForBooksWithWilcardsTitle_thenBookWithMatchInTitleIsInTheListReturned() {
+    void givenBookWithTitleInList_whenSearchingForBooksWithWildcardsTitle_thenBookWithMatchInTitleIsInTheListReturned() {
         String myTitle = "exampleTitle";
         Book book = new Book(null,myTitle,null,null);
         bookService.registerBook(book);
-        Assertions.assertThat(bookService.searchBooksByTitle("*Title")).contains(book);
+        Assertions.assertThat(bookService.searchBooksByTitle(".*Title")).contains(book);
     }
 }
