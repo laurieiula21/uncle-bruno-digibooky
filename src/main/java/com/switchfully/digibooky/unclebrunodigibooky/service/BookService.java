@@ -33,16 +33,15 @@ public class BookService {
         throw new IsbnDoesNotExistException("The isbn does not exist");
     }
 
-    /**
-     * Story 3
-     * @param isbn - isbn number
-     * @return list of books containing (part of) isbn
-     */
     public List<Book> searchBookByISBN(String isbn) {
 
         return bookRepository.getAllBooks().stream()
                 .filter(book -> book.getIsbn().contains(isbn))
                 .toList();
-
     }
+
+    public void registerBook(Book book) {
+        bookRepository.addBook(book);
+    }
+
 }

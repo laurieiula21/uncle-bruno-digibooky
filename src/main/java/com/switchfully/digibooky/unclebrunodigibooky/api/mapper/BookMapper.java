@@ -15,4 +15,11 @@ public class BookMapper {
                 .setTitle(book.getTitle())
                 .setSummary(book.getSummary());
     }
+
+    public Book mapBookDtoToBook (BookDto bookDto) {
+        return new Book(bookDto.getIsbn()
+                , bookDto.getTitle()
+                , bookDto.getAuthor()
+                , bookDto.getSummary());
+    }
 }

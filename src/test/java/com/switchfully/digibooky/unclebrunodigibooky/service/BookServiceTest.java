@@ -40,11 +40,12 @@ class BookServiceTest {
         assertThat(expectedBookList.get(0).getIsbn()).isEqualTo(bookService.searchBookByISBN(givenIsbn).get(0).getIsbn());
 
     }
+
     @Test
-    void GivenAnISBNQuery_WhenSearchingISBN_ThenReturnListOfBooksContainingISBN(){
+    void GivenAnISBNQuery_WhenSearchingISBN_ThenReturnListOfBooksContainingISBN() {
         List<Book> expectedBookList = List.of(new Book("isbn1", "Title 1", new Author("First", "Last"), "This is the summary of 69"),
-        new Book("isbn2", "Title 2", new Author("Second", "Last"), "This is the summary of 69"),
-        new Book("isbn3", "Title 3", new Author("Third", "Last"), "This is the summary of 69"));
+                new Book("isbn2", "Title 2", new Author("Second", "Last"), "This is the summary of 69"),
+                new Book("isbn3", "Title 3", new Author("Third", "Last"), "This is the summary of 69"));
 
         String givenIsbn = "i";
 
@@ -52,4 +53,14 @@ class BookServiceTest {
         assertThat(expectedBookList.get(1).getIsbn()).isEqualTo(bookService.searchBookByISBN(givenIsbn).get(1).getIsbn());
         assertThat(expectedBookList.get(2).getIsbn()).isEqualTo(bookService.searchBookByISBN(givenIsbn).get(2).getIsbn());
     }
+
+    @Test
+    void GivenBook_WhenRegisteringBook_ThenBookIsAddedToRepository() {
+        Book actualBook = new Book("isbn5", "registeredBook", new Author("Second", "Last"), "This book should be registered in the list");
+
+        bookService.registerBook(actualBook);
+        assertThat(bookService.getAllBooks()).contains(actualBook);
+    }
+
+
 }
