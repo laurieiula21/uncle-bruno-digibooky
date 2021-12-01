@@ -1,5 +1,6 @@
 package com.switchfully.digibooky.unclebrunodigibooky.api;
 
+import com.switchfully.digibooky.unclebrunodigibooky.domain.DigibookyFeature;
 import com.switchfully.digibooky.unclebrunodigibooky.domain.book.BookDto;
 import com.switchfully.digibooky.unclebrunodigibooky.api.mapper.BookMapper;
 import com.switchfully.digibooky.unclebrunodigibooky.domain.book.Book;
@@ -37,7 +38,8 @@ public class BookController {
 
     @GetMapping(produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
-    public List<BookDto> getAllBooks() {
+    public List<BookDto> getAllBooks(@RequestHeader(required = false) String authorization) {
+        authorisationService.validateAuthorisation(DigibookyFeature.GET_ALL_BOOKS, authorization);
         List<Book> bookList = bookService.getAllBooks();
         List<BookDto> bookDtoList = bookList.stream()
                 .map(bookMapper::mapBookToDto)
@@ -56,9 +58,9 @@ public class BookController {
     @GetMapping(produces = "application/json", params = "isbn")
     @ResponseStatus(HttpStatus.OK)
     public List<BookDto> search(@RequestParam String isbn) {
-        myLogger.info(isbn+" has been queried");
-           return bookService.searchBookByISBN(isbn).stream()
-                    .map(bookMapper::mapBookToDto)
-                    .toList();
+        myLogger.info(isbn + " has been queried");
+        return bookService.searchBookByISBN(isbn).stream()
+                .map(bookMapper::mapBookToDto)
+                .toList();
     }
 }

@@ -1,6 +1,8 @@
 package com.switchfully.digibooky.unclebrunodigibooky.api;
 
+import com.switchfully.digibooky.unclebrunodigibooky.domain.DigibookyFeature;
 import com.switchfully.digibooky.unclebrunodigibooky.domain.bookloan.CreateBookLoanDto;
+import com.switchfully.digibooky.unclebrunodigibooky.service.AuthorisationService;
 import com.switchfully.digibooky.unclebrunodigibooky.service.BookLoanService;
 import com.switchfully.digibooky.unclebrunodigibooky.service.UserService;
 import org.slf4j.Logger;
@@ -14,30 +16,33 @@ public class BookLoanController {
 
     private final BookLoanService bookLoanService;
     private final UserService userService;
+    private final AuthorisationService authorisationService;
     private final Logger myLogger = LoggerFactory.getLogger(BookLoanController.class);
 
 
-    public BookLoanController(BookLoanService bookLoanService, UserService userService) {
+    public BookLoanController(BookLoanService bookLoanService, UserService userService, AuthorisationService authorisationService) {
         this.bookLoanService = bookLoanService;
         this.userService = userService;
+        this.authorisationService = authorisationService;
     }
 
     @PostMapping(consumes = "application/json")
     @ResponseStatus(HttpStatus.CREATED)
-    public void lendBook(@RequestBody CreateBookLoanDto createBookLoanDto) {
+    public void lendBook(@RequestBody CreateBookLoanDto createBookLoanDto, @RequestHeader(required = false) String authorization) {
         myLogger.info("Loan: isbn:" + createBookLoanDto.getIsbn() + " by user: " + createBookLoanDto.getUserId() + " has been queried");
         userService.getUserById(createBookLoanDto.getUserId());
-        myLogger.info("Loan user: " + createBookLoanDto.getUserId() + " has been validated.");
+        authorisationService.validateAuthorisation(DigibookyFeature.LEND_BOOK, authorization);
         bookLoanService.lendBook(createBookLoanDto.getIsbn(), createBookLoanDto.getUserId());
         myLogger.info("Created loan: isbn:" + createBookLoanDto.getIsbn() + " by user: " + createBookLoanDto.getUserId());
     }
 
     @PutMapping(path = "/return/{bookloanId}", produces = "application/json", consumes = "application/json")
     @ResponseStatus(HttpStatus.OK)
-    public String returnBook(@PathVariable("bookloanId") String bookloanId) {
+    public String returnBook(@PathVariable("bookloanId") String bookloanId, @RequestHeader(required = false) String authorization) {
         myLogger.info("Returning bookId: " + bookloanId + " .");
-        return bookLoanService.returnBook(bookloanId);
+        authorisationService.validateAuthorisation(DigibookyFeature.RETURN_BOOK, authorization);
+        String message = bookLoanService.returnBook(bookloanId);
+        myLogger.info("Returning book successful.");
+        return message;
     }
-
-
 }
