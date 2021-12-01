@@ -5,6 +5,7 @@ import com.switchfully.digibooky.unclebrunodigibooky.domain.book.Book;
 import com.switchfully.digibooky.unclebrunodigibooky.repository.BookRepository;
 
 import org.springframework.stereotype.Service;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -62,18 +63,23 @@ public class BookService {
     public List<Book> getBooksWithTitle(String myTitle) {
         return null;
     }
+
     public List<Book> searchBookByAuthor(String authorName) {
 
+        String query = authorName.replaceAll("\\*", "\\.\\*").replaceAll("\\?", "\\.\\?");
+
         List<Book> booksByAuthorFirstName = bookRepository.getAllBooks().stream()
-                .filter(book -> book.getAuthor().getFirstName().contains(authorName))
+                .filter(book -> book.getAuthor().getFirstName().matches(query))
                 .toList();
 
-        List<Book> booksByAuthorLastName=(bookRepository.getAllBooks().stream()
-                .filter(book -> book.getAuthor().getLastName().contains(authorName))
+        List<Book> booksByAuthorLastName = (bookRepository.getAllBooks().stream()
+                .filter(book -> book.getAuthor().getLastName().matches(query))
                 .toList());
+
         List<Book> booksByAuthorName = new ArrayList<>();
         booksByAuthorName.addAll(booksByAuthorFirstName);
         booksByAuthorName.addAll(booksByAuthorLastName);
+
         return booksByAuthorName;
     }
 

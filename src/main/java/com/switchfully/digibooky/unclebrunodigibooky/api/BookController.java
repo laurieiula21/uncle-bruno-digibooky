@@ -93,7 +93,8 @@ public class BookController {
      */
     @GetMapping(produces="application/json", params="authorName")
     @ResponseStatus(HttpStatus.OK)
-    public List<BookDto> searchBookByAuthor(@RequestParam String authorName){
+    public List<BookDto> searchBookByAuthor(@RequestParam() String authorName){
+
         myLogger.info("search started for "+ authorName);
         List<BookDto> listOfBooksByAuthorName =  bookService.searchBookByAuthor(authorName).stream()
                 .map(bookMapper::mapBookToDto)
