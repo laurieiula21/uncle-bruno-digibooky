@@ -6,7 +6,9 @@ import com.switchfully.digibooky.unclebrunodigibooky.repository.BookRepository;
 
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -44,7 +46,10 @@ public class BookService {
         bookRepository.addBook(book);
     }
 
-    public List<Book> getBooksWithTitle(String myTitle) {
-        return null;
+
+    public Collection<Book> searchBooksByTitle(String title) {
+        return bookRepository.getAllBooks().stream()
+                .filter(book -> book.getTitle().equals(title))
+                .collect(Collectors.toList());
     }
 }

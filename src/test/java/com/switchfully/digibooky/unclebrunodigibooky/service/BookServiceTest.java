@@ -68,7 +68,14 @@ class BookServiceTest {
         String myTitle = "exampleTitle";
         Book book = new Book(null,myTitle,null,null);
         bookService.registerBook(book);
-        Assertions.assertThat(bookService.getBooksWithTitle(myTitle)).asList().contains(book);
+        Assertions.assertThat(bookService.searchBooksByTitle(myTitle)).contains(book);
     }
 
+    @Test
+    void givenBookWithTitleInList_whenSearchingForBooksWithWilcardsTitle_thenBookWithMatchInTitleIsInTheListReturned() {
+        String myTitle = "exampleTitle";
+        Book book = new Book(null,myTitle,null,null);
+        bookService.registerBook(book);
+        Assertions.assertThat(bookService.searchBooksByTitle("*Title")).contains(book);
+    }
 }
