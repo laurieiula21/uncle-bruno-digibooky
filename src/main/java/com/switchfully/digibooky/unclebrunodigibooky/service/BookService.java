@@ -6,6 +6,7 @@ import com.switchfully.digibooky.unclebrunodigibooky.repository.BookRepository;
 
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -42,6 +43,21 @@ public class BookService {
 
     public void registerBook(Book book) {
         bookRepository.addBook(book);
+    }
+
+    public List<Book> searchBookByAuthor(String authorName) {
+
+        List<Book> booksByAuthorFirstName = bookRepository.getAllBooks().stream()
+                .filter(book -> book.getAuthor().getFirstName().contains(authorName))
+                .toList();
+
+        List<Book> booksByAuthorLastName=(bookRepository.getAllBooks().stream()
+                .filter(book -> book.getAuthor().getLastName().contains(authorName))
+                .toList());
+        List<Book> booksByAuthorName = new ArrayList<>();
+        booksByAuthorName.addAll(booksByAuthorFirstName);
+        booksByAuthorName.addAll(booksByAuthorLastName);
+        return booksByAuthorName;
     }
 
 }

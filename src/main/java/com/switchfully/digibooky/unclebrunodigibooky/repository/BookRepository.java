@@ -22,6 +22,7 @@ public class BookRepository {
         addBook(new Book("isbn1", "Title 1", new Author("First", "Last"), "This is the summary of 69"));
         addBook(new Book("isbn2", "Title 2", new Author("Second", "Last"), "This is the summary of 69"));
         addBook(new Book("isbn3", "Title 3", new Author("Third", "Last"), "This is the summary of 69"));
+        addBook(new Book("isbn4", "Title 4", new Author("First", "Last"), "This is the summary of 69"));
     }
 
     public BookRepository(List<Book> bookList) {
