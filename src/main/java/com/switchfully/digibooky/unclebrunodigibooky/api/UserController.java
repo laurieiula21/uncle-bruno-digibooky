@@ -1,6 +1,7 @@
 package com.switchfully.digibooky.unclebrunodigibooky.api;
 
 import com.switchfully.digibooky.unclebrunodigibooky.api.mapper.UserMapper;
+import com.switchfully.digibooky.unclebrunodigibooky.domain.DigibookyFeature;
 import com.switchfully.digibooky.unclebrunodigibooky.domain.user.User;
 import com.switchfully.digibooky.unclebrunodigibooky.domain.user.UserDto;
 import com.switchfully.digibooky.unclebrunodigibooky.service.AuthorisationService;
@@ -36,9 +37,12 @@ public class UserController {
         return userMapper.mapToUserDto(savedUser);
     }
 
-    @PutMapping(path = "/{id}", produces = "application/json")
+    @PutMapping(path = "/register-librarian/{id}", produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
-    public UserDto registerLibrarian(@PathVariable("id") String id){
+    public UserDto registerLibrarian(@PathVariable("id") String id, @RequestHeader String authorization){
+        String userEmail = authorisationService.parseAuthorization(authorization);
+        User userByEmail = userService.getUserByEmail(userEmail);
+        authorisationService.validateAuthorisation(DigibookyFeature.REGISTER_LIBRARIAN,userByEmail.getUserRole());
         User userMember = userService.getUserById(id);
         User userLibrarian = userService.registerUserAsLibrarian(userMember);
         return userMapper.mapToUserDto(userLibrarian);

@@ -1,7 +1,9 @@
 package com.switchfully.digibooky.unclebrunodigibooky.service;
 
+import com.switchfully.digibooky.unclebrunodigibooky.api.mapper.UserMapper;
 import com.switchfully.digibooky.unclebrunodigibooky.domain.Address;
 import com.switchfully.digibooky.unclebrunodigibooky.domain.user.User;
+import com.switchfully.digibooky.unclebrunodigibooky.domain.user.UserDto;
 import com.switchfully.digibooky.unclebrunodigibooky.domain.user.UserRole;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -25,9 +27,34 @@ class UserServiceTest {
     }
 
     @Test
+    public void givenAUserThatExists_whenTryingToGetItById_thenUserIsFoundAndReturned() {
+        Address myAddress = new Address(null,0,0,"cityName");
+        UserDto userDto = new UserDto().setInss("5").setLastName("lastName").setEmail("email@mail.com")
+                .setAddress(myAddress).setUserRole("MEMBER");
+        User user = new UserMapper().mapToUser(userDto);
+        String userId = user.getId();
+        userService.saveUser(user);
+        Assertions.assertThat(userService.getUserById(userId)).isEqualTo(user);
+    }
+
+    @Test
     public void givenAUserThatDoesNotExist_whenTryingToGetItById_thenNoSuchElementExceptionIsThrown() {
         Assertions.assertThatExceptionOfType(NoSuchElementException.class)
                 .isThrownBy(() -> userService.getUserById("jdoedufnhrfisj"));
+    }
+
+    @Test
+    public void givenAUserThatExists_whenTryingToGetItByEmail_thenUserIsFoundAndReturned() {
+        User memberUser = new User("5", "firstName", "lastName",  "email@mail.com",
+                new Address(null,0,0,"cityName"), UserRole.MEMBER);
+        userService.saveUser(memberUser);
+        Assertions.assertThat(userService.getUserByEmail("email@mail.com")).isEqualTo(memberUser);
+    }
+
+    @Test
+    public void givenAUserThatDoesNotExist_whenTryingToGetItByEmail_thenNoSuchElementExceptionIsThrown() {
+        Assertions.assertThatExceptionOfType(NoSuchElementException.class)
+                .isThrownBy(() -> userService.getUserByEmail("nouser@mail.com"));
     }
 
 }
