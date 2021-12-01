@@ -4,10 +4,10 @@ import com.switchfully.digibooky.unclebrunodigibooky.domain.book.Author;
 import com.switchfully.digibooky.unclebrunodigibooky.domain.book.Book;
 import com.switchfully.digibooky.unclebrunodigibooky.domain.exceptions.IsbnDoesNotExistException;
 import com.switchfully.digibooky.unclebrunodigibooky.repository.BookRepository;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -73,6 +73,13 @@ class BookServiceTest {
         assertThat(bookService.searchBookByAuthor(givenAuthorName).get(1).getIsbn()).isEqualTo(expectedList.get(1).getIsbn());
 
 
+    }
+    @Test
+    void givenBookWithTitleInList_whenSearchingForBooksWithFullTitle_thenBookWithMatchInTitleIsInTheListReturned() {
+        String myTitle = "exampleTitle";
+        Book book = new Book(null,myTitle,null,null);
+        bookService.registerBook(book);
+        Assertions.assertThat(bookService.getBooksWithTitle(myTitle)).asList().contains(book);
     }
 
 }

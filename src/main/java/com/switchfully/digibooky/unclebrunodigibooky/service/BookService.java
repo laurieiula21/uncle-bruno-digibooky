@@ -5,9 +5,9 @@ import com.switchfully.digibooky.unclebrunodigibooky.domain.book.Book;
 import com.switchfully.digibooky.unclebrunodigibooky.repository.BookRepository;
 
 import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 
 @Service
@@ -34,17 +34,34 @@ public class BookService {
         throw new IsbnDoesNotExistException("The isbn does not exist");
     }
 
+    /**
+     * Story 3
+     *
+     * @param isbn - isbn number
+     * @return list of books containing (part of) isbn
+     */
     public List<Book> searchBookByISBN(String isbn) {
 
         return bookRepository.getAllBooks().stream()
                 .filter(book -> book.getIsbn().contains(isbn))
                 .toList();
+
+    }
+
+    public Book getBookBy(String bookId) {
+        return bookRepository.getAllBooks().stream()
+                .filter(book -> book.getId().equals(bookId))
+                .findFirst()
+                .orElseThrow(() -> new NoSuchElementException("No book with id: " + bookId + " found"));
     }
 
     public void registerBook(Book book) {
         bookRepository.addBook(book);
     }
 
+    public List<Book> getBooksWithTitle(String myTitle) {
+        return null;
+    }
     public List<Book> searchBookByAuthor(String authorName) {
 
         List<Book> booksByAuthorFirstName = bookRepository.getAllBooks().stream()
