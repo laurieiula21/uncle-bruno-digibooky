@@ -8,7 +8,6 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -63,6 +62,18 @@ class BookServiceTest {
         assertThat(bookService.getAllBooks()).contains(actualBook);
     }
 
+    @Test
+    void GivenAuthorName_WhenSearchingByAuthor_ThenReturnBooksOfThatAuthor() {
+        String givenAuthorName = "First";
+        List<Book> expectedList = List.of(
+                new Book("isbn1", "Title 1", new Author("First", "Last"), "This is the summary of 69"),
+                new Book("isbn4", "Title 4", new Author("First", "Last"), "This is the summary of 69")
+        );
+        assertThat(bookService.searchBookByAuthor(givenAuthorName).get(0).getIsbn()).isEqualTo(expectedList.get(0).getIsbn());
+        assertThat(bookService.searchBookByAuthor(givenAuthorName).get(1).getIsbn()).isEqualTo(expectedList.get(1).getIsbn());
+
+
+    }
     @Test
     void givenBookWithTitleInList_whenSearchingForBooksWithFullTitle_thenBookWithMatchInTitleIsInTheListReturned() {
         String myTitle = "exampleTitle";

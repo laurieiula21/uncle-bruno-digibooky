@@ -1,5 +1,8 @@
 package com.switchfully.digibooky.unclebrunodigibooky.service;
 
+import com.switchfully.digibooky.unclebrunodigibooky.api.mapper.BookMapper;
+import com.switchfully.digibooky.unclebrunodigibooky.domain.book.Book;
+import com.switchfully.digibooky.unclebrunodigibooky.domain.book.BookDto;
 import com.switchfully.digibooky.unclebrunodigibooky.domain.bookloan.BookLoan;
 import com.switchfully.digibooky.unclebrunodigibooky.domain.exceptions.BookNotAvailableException;
 import com.switchfully.digibooky.unclebrunodigibooky.repository.BookLoanHistoryRepository;
@@ -8,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class BookLoanService {
@@ -15,11 +19,13 @@ public class BookLoanService {
     private final BookLoanRepository bookLoanRepository;
     private final BookLoanHistoryRepository bookLoanHistoryRepository;
     private final BookService bookService;
+    private final BookMapper bookMapper;
 
-    public BookLoanService(BookLoanRepository bookLoanRepository, BookLoanHistoryRepository bookLoanHistoryRepository, BookService bookService) {
+    public BookLoanService(BookLoanRepository bookLoanRepository, BookLoanHistoryRepository bookLoanHistoryRepository, BookService bookService, BookMapper bookMapper) {
         this.bookLoanRepository = bookLoanRepository;
         this.bookLoanHistoryRepository = bookLoanHistoryRepository;
         this.bookService = bookService;
+        this.bookMapper = bookMapper;
     }
 
     public List<BookLoan> getAllBookLoans() {
@@ -46,11 +52,20 @@ public class BookLoanService {
     public String returnBook(String bookLoanId) {
         BookLoan bookLoan = bookLoanRepository.removeBookLoanBy(bookLoanId);
         bookLoanHistoryRepository.addBookLoan(bookLoan);
-        if (bookLoan.getReturnDate().isAfter(LocalDate.now())) {
+        if (LocalDate.now().isAfter(bookLoan.getReturnDate())) {
             //Add late fine
             return "Book too late";
         }
         // check for damage fine
         return bookLoan.getLoanId();
+    }
+
+    public List<Book> getBooksBorrowedBy(String userId) {
+        List<Book> borrowedBooksByUser = bookLoanRepository.getBookLoanList().stream()
+                .filter(book -> book.getUserId().equals(userId))
+                .map(BookLoan::getBookId)
+                .map(bookService::getBookBy)
+                .collect(Collectors.toList());
+        return borrowedBooksByUser;
     }
 }

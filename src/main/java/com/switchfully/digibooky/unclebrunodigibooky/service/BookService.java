@@ -7,8 +7,10 @@ import com.switchfully.digibooky.unclebrunodigibooky.repository.BookRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.NoSuchElementException;
 
 
 @Service
@@ -35,11 +37,25 @@ public class BookService {
         throw new IsbnDoesNotExistException("The isbn does not exist");
     }
 
+    /**
+     * Story 3
+     *
+     * @param isbn - isbn number
+     * @return list of books containing (part of) isbn
+     */
     public List<Book> searchBookByISBN(String isbn) {
 
         return bookRepository.getAllBooks().stream()
                 .filter(book -> book.getIsbn().contains(isbn))
                 .toList();
+
+    }
+
+    public Book getBookBy(String bookId) {
+        return bookRepository.getAllBooks().stream()
+                .filter(book -> book.getId().equals(bookId))
+                .findFirst()
+                .orElseThrow(() -> new NoSuchElementException("No book with id: " + bookId + " found"));
     }
 
     public void registerBook(Book book) {
@@ -52,4 +68,19 @@ public class BookService {
                 .filter(book -> book.getTitle().equals(title))
                 .collect(Collectors.toList());
     }
+    public List<Book> searchBookByAuthor(String authorName) {
+
+        List<Book> booksByAuthorFirstName = bookRepository.getAllBooks().stream()
+                .filter(book -> book.getAuthor().getFirstName().contains(authorName))
+                .toList();
+
+        List<Book> booksByAuthorLastName=(bookRepository.getAllBooks().stream()
+                .filter(book -> book.getAuthor().getLastName().contains(authorName))
+                .toList());
+        List<Book> booksByAuthorName = new ArrayList<>();
+        booksByAuthorName.addAll(booksByAuthorFirstName);
+        booksByAuthorName.addAll(booksByAuthorLastName);
+        return booksByAuthorName;
+    }
+
 }

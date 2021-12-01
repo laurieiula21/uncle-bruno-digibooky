@@ -1,6 +1,9 @@
 package com.switchfully.digibooky.unclebrunodigibooky.api;
 
+import com.switchfully.digibooky.unclebrunodigibooky.api.mapper.BookMapper;
 import com.switchfully.digibooky.unclebrunodigibooky.domain.DigibookyFeature;
+import com.switchfully.digibooky.unclebrunodigibooky.domain.book.Book;
+import com.switchfully.digibooky.unclebrunodigibooky.domain.book.BookDto;
 import com.switchfully.digibooky.unclebrunodigibooky.domain.bookloan.CreateBookLoanDto;
 import com.switchfully.digibooky.unclebrunodigibooky.service.AuthorisationService;
 import com.switchfully.digibooky.unclebrunodigibooky.service.BookLoanService;
@@ -10,6 +13,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @RestController
 @RequestMapping(path = "/bookloans")
 public class BookLoanController {
@@ -17,13 +23,15 @@ public class BookLoanController {
     private final BookLoanService bookLoanService;
     private final UserService userService;
     private final AuthorisationService authorisationService;
+    private final BookMapper bookMapper;
     private final Logger myLogger = LoggerFactory.getLogger(BookLoanController.class);
 
 
-    public BookLoanController(BookLoanService bookLoanService, UserService userService, AuthorisationService authorisationService) {
+    public BookLoanController(BookLoanService bookLoanService, UserService userService, AuthorisationService authorisationService, BookMapper bookMapper) {
         this.bookLoanService = bookLoanService;
         this.userService = userService;
         this.authorisationService = authorisationService;
+        this.bookMapper = bookMapper;
     }
 
     @PostMapping(consumes = "application/json")
@@ -45,4 +53,16 @@ public class BookLoanController {
         myLogger.info("Returning book successful.");
         return message;
     }
+
+    @GetMapping(produces = "application/json")
+    @ResponseStatus(HttpStatus.OK)
+    public List<BookDto> getAllBorrowedBooksBy(@RequestParam String userId, @RequestHeader(required = false) String authorization){
+        myLogger.info("Borrowed books by user with id: " + userId + " .");
+        authorisationService.validateAuthorisation(DigibookyFeature.GET_ALL_BORROWED_BOOKS_OF_USER, authorization);
+        List<Book> booksBorrowedByUser = bookLoanService.getBooksBorrowedBy(userId);
+        List<BookDto> bookDtoList = booksBorrowedByUser.stream().map(book -> bookMapper.mapBookToDto(book)).collect(Collectors.toList());
+        myLogger.info("Returning borrowed Book Dtos of user successful.");
+        return bookDtoList;
+    }
+
 }

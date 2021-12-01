@@ -1,6 +1,7 @@
 package com.switchfully.digibooky.unclebrunodigibooky.service;
 
 import com.switchfully.digibooky.unclebrunodigibooky.domain.book.Book;
+import com.switchfully.digibooky.unclebrunodigibooky.domain.book.BookDto;
 import com.switchfully.digibooky.unclebrunodigibooky.domain.bookloan.BookLoan;
 import com.switchfully.digibooky.unclebrunodigibooky.domain.exceptions.BookNotAvailableException;
 import org.assertj.core.api.Assertions;
@@ -11,8 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -40,7 +43,7 @@ class BookLoanServiceTest {
         Assertions.assertThat(bookWithId).isNotNull();
 
         // When
-        bookLoanService.lendBook("isbn1", "userIdToFind");
+        String loanId = bookLoanService.lendBook("isbn1", "userIdToFind");
         bookWithId = booksWithIsbn1.stream()
                 .filter(book -> bookLoanService.isBookAvailable(book.getId()))
                 .findFirst()
@@ -50,16 +53,18 @@ class BookLoanServiceTest {
          * */
         // Then
         Assertions.assertThat(bookWithId).isNull();
+        bookLoanService.returnBook(loanId);
     }
 
     @Test
     void givenANotAvailableBook_whenTryingToLendThatBook_thenThrowBookNotAvailableException() {
         // Given
         // When
-        bookLoanService.lendBook("isbn2", "userIdToFind");
+        String loanId = bookLoanService.lendBook("isbn1", "userIdToFind");
         // Then
         assertThatExceptionOfType(BookNotAvailableException.class)
-                .isThrownBy(() -> bookLoanService.lendBook("isbn2", "userIdToFind"));
+                .isThrownBy(() -> bookLoanService.lendBook("isbn1", "userIdToFind"));
+        bookLoanService.returnBook(loanId);
     }
 
     @Test
@@ -88,5 +93,35 @@ class BookLoanServiceTest {
                 .isThrownBy(() -> bookLoanService.returnBook("wrongId"));
     }
 
+    @Test
+    void givenAUserId_whenGettingAllBorrowedBooksForUserId_thenReturnListOfBorrowedBooks(){
+        // Given
+        String loanIdIsbn1 = bookLoanService.lendBook("isbn1", "userIdToFind");
+        String loanIdIsbn2 = bookLoanService.lendBook("isbn2", "userIdToFind");
+        String loanIdIsbn3 = bookLoanService.lendBook("isbn3", "userIdToNotFind");
+        List<String> bookIdsBorrowedByUser = bookLoanService.getAllBookLoans().stream()
+                .filter(book -> book.getUserId().equals("userIdToFind"))
+                .map(book -> book.getBookId())
+                .collect(Collectors.toList());
+
+        // When
+        List<Book> bookListBorrowedByUser = bookLoanService.getBooksBorrowedBy("userIdToFind");
+        // Then
+
+        Assertions.assertThat(bookListBorrowedByUser.stream().map(Book::getId)).containsAll(bookIdsBorrowedByUser);
+        bookLoanService.returnBook(loanIdIsbn1);
+        bookLoanService.returnBook(loanIdIsbn2);
+        bookLoanService.returnBook(loanIdIsbn3);
+    }
+
+    @Test
+    void givenAUserIdWithoutBorrowedBooks_whenGettingAllBorrowedBooksForUserId_thenReturEmptyList(){
+        // Given
+        List<String> stringList = new ArrayList<>();
+        // When
+        List<Book> bookListBorrowedByUser = bookLoanService.getBooksBorrowedBy("userIdToFind");
+        // Then
+        Assertions.assertThat(bookListBorrowedByUser.stream().map(Book::getId)).containsAll(stringList);
+    }
 
 }

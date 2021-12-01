@@ -98,4 +98,20 @@ public class BookController {
         myLogger.info("Search book by title method successfully ended");
         return bookDtos;
     }
+
+    /**
+     * Story 5
+     * @param authorName - enter author firstname or lastname
+     * @return books written by given author
+     */
+    @GetMapping(produces="application/json", params="authorName")
+    @ResponseStatus(HttpStatus.OK)
+    public List<BookDto> searchBookByAuthor(@RequestParam String authorName){
+        myLogger.info("search started for "+ authorName);
+        List<BookDto> listOfBooksByAuthorName =  bookService.searchBookByAuthor(authorName).stream()
+                .map(bookMapper::mapBookToDto)
+                .toList();
+        myLogger.info("search completed for "+ authorName);
+        return listOfBooksByAuthorName;
+    }
 }
