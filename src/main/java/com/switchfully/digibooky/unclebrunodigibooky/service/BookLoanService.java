@@ -35,7 +35,7 @@ public class BookLoanService {
         bookLoanRepository.addBookLoan(bookLoan);
     }
 
-    private boolean isBookAvailable(String bookId) {
+    public boolean isBookAvailable(String bookId) {
         return getAllBookLoans().stream().noneMatch(loan -> loan.getBookId().equals(bookId));
     }
 }

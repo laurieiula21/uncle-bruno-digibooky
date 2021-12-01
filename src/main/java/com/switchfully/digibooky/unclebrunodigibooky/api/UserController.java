@@ -35,4 +35,12 @@ public class UserController {
         User savedUser = userService.saveUser(user);
         return userMapper.mapToUserDto(savedUser);
     }
+
+    @PutMapping(path = "/{id}", produces = "application/json")
+    @ResponseStatus(HttpStatus.OK)
+    public UserDto registerLibrarian(@PathVariable("id") String id){
+        User userMember = userService.getUserById(id);
+        User userLibrarian = userService.registerUserAsLibrarian(userMember);
+        return userMapper.mapToUserDto(userLibrarian);
+    }
 }

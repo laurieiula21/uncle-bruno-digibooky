@@ -12,7 +12,7 @@ public class User {
     private final String lastName;
     private final String email;
     private final Address address;
-    private final UserRole userRole;
+    private UserRole userRole;
 
     public User(String inss, String firstName, String lastName, String email, Address address, UserRole userRole) {
         this.inss = inss;
@@ -54,4 +54,8 @@ public class User {
         return userRole;
     }
 
+    public User setUserRole(UserRole userRole) {
+        this.userRole = userRole;
+        return this;
+    }
 }
