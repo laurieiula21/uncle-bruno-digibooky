@@ -6,8 +6,11 @@ import com.switchfully.digibooky.unclebrunodigibooky.repository.BookRepository;
 
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.NoSuchElementException;
 
 
@@ -60,8 +63,12 @@ public class BookService {
         bookRepository.addBook(book);
     }
 
-    public List<Book> getBooksWithTitle(String myTitle) {
-        return null;
+
+    public Collection<Book> searchBooksByTitle(String title) {
+
+        return bookRepository.getAllBooks().stream()
+                .filter(book -> book.getTitle().matches(title))
+                .collect(Collectors.toList());
     }
 
     public List<Book> searchBookByAuthor(String authorName) {

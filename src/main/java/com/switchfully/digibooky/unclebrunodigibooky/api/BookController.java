@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -65,7 +66,7 @@ public class BookController {
      */
     @GetMapping(produces = "application/json", params = "isbn")
     @ResponseStatus(HttpStatus.OK)
-    public List<BookDto> searchIsbn(@RequestParam String isbn) {
+    public List<BookDto> search(@RequestParam String isbn) {
         myLogger.info(isbn + " has been queried");
         return bookService.searchBookByISBN(isbn).stream()
                 .map(bookMapper::mapBookToDto)
@@ -84,6 +85,18 @@ public class BookController {
         Book book = bookMapper.mapBookDtoToBook(bookDto);
         bookService.registerBook(book);
         myLogger.info("RegisterNewBook Method successfully ended");
+    }
+
+    @GetMapping(path = "/search", produces = "application/json")
+    @ResponseStatus(HttpStatus.OK)
+    public Collection<BookDto> searchBookByTitle(@RequestParam String title){
+        myLogger.info("Search book by title method is called");
+        Collection<Book> books = bookService.searchBooksByTitle(title);
+        Collection<BookDto> bookDtos =  books.stream()
+                .map(bookMapper::mapBookToDto)
+                .collect(Collectors.toList());
+        myLogger.info("Search book by title method successfully ended");
+        return bookDtos;
     }
 
     /**
