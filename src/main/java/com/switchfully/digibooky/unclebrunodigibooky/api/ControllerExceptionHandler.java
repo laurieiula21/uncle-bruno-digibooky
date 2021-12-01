@@ -1,5 +1,6 @@
 package com.switchfully.digibooky.unclebrunodigibooky.api;
 
+import com.switchfully.digibooky.unclebrunodigibooky.domain.exceptions.AuthorisationNotGrantedException;
 import com.switchfully.digibooky.unclebrunodigibooky.domain.exceptions.BookNotAvailableException;
 import com.switchfully.digibooky.unclebrunodigibooky.domain.exceptions.InvalidUserException;
 import com.switchfully.digibooky.unclebrunodigibooky.domain.exceptions.IsbnDoesNotExistException;
@@ -37,6 +38,12 @@ public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
     protected void noSuchElement(NoSuchElementException ex,
                                     HttpServletResponse response) throws IOException {
         response.sendError(HttpStatus.BAD_REQUEST.value(), ex.getMessage());
+    }
+
+    @ExceptionHandler(AuthorisationNotGrantedException.class)
+    protected void noSuchElement(AuthorisationNotGrantedException ex,
+                                 HttpServletResponse response) throws IOException {
+        response.sendError(HttpStatus.FORBIDDEN.value(), ex.getMessage());
     }
 
 }

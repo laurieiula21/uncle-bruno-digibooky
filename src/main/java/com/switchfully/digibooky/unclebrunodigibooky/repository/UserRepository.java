@@ -1,6 +1,8 @@
 package com.switchfully.digibooky.unclebrunodigibooky.repository;
 
+import com.switchfully.digibooky.unclebrunodigibooky.domain.Address;
 import com.switchfully.digibooky.unclebrunodigibooky.domain.user.User;
+import com.switchfully.digibooky.unclebrunodigibooky.domain.user.UserRole;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -13,6 +15,9 @@ public class UserRepository {
 
     public UserRepository() {
         userList = new ArrayList<>();
+        User adminUser = new User("1","admin","admin","admin@mail.com",
+                new Address(null,0,0,"City"), UserRole.ADMIN);
+        userList.add(adminUser);
     }
 
     public UserRepository(List<User> userList) {
@@ -41,6 +46,13 @@ public class UserRepository {
     public User getUserById(String id) {
         return userList.stream()
                 .filter(user -> user.getId().equals(id))
+                .findFirst()
+                .get();
+    }
+
+    public User getUserByEmail(String email) {
+        return userList.stream()
+                .filter(user -> user.getEmail().equals(email))
                 .findFirst()
                 .get();
     }
