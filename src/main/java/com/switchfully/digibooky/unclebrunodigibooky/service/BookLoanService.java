@@ -45,12 +45,12 @@ public class BookLoanService {
 
     public String returnBook(String bookLoanId) {
         BookLoan bookLoan = bookLoanRepository.removeBookLoanBy(bookLoanId);
+        bookLoanHistoryRepository.addBookLoan(bookLoan);
         if (bookLoan.getReturnDate().isAfter(LocalDate.now())) {
             //Add late fine
             return "Book too late";
         }
         // check for damage fine
-        bookLoanHistoryRepository.addBookLoan(bookLoan);
         return bookLoan.getLoanId();
     }
 }

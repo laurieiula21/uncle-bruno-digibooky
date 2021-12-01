@@ -12,6 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -76,6 +77,15 @@ class BookLoanServiceTest {
                 .orElse(null);
 
         Assertions.assertThat(bookLoan).isNull();
+    }
+
+    @Test
+    void givenABookLoanIdThatIsNotInTheRepository_whenTryingToRemoveThatBook_thenExpectingException(){
+        //given
+        //when
+        // then
+        Assertions.assertThatExceptionOfType(NoSuchElementException.class)
+                .isThrownBy(() -> bookLoanService.returnBook("wrongId"));
     }
 
 

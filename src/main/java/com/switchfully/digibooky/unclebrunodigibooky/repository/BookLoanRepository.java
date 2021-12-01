@@ -5,6 +5,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Repository
 public class BookLoanRepository {
@@ -22,12 +23,11 @@ public class BookLoanRepository {
         return bookLoanList;
     }
 
-
     public BookLoan removeBookLoanBy(String bookLoanId) {
         BookLoan bookLoan = bookLoanList.stream()
                 .filter(bookloan -> bookloan.getLoanId().equals(bookLoanId))
                 .findFirst()
-                .orElseGet(null);
+                .orElseThrow(() -> new NoSuchElementException("The bookloan id isn't in the repository."));
         bookLoanList.remove(bookLoan);
         return bookLoan;
     }
