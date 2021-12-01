@@ -1,8 +1,11 @@
 package com.switchfully.digibooky.unclebrunodigibooky.api;
 
+import com.switchfully.digibooky.unclebrunodigibooky.domain.DigibookyFeature;
 import com.switchfully.digibooky.unclebrunodigibooky.domain.book.BookDto;
 import com.switchfully.digibooky.unclebrunodigibooky.api.mapper.BookMapper;
 import com.switchfully.digibooky.unclebrunodigibooky.domain.book.Book;
+import com.switchfully.digibooky.unclebrunodigibooky.domain.user.UserDto;
+import com.switchfully.digibooky.unclebrunodigibooky.domain.user.UserRole;
 import com.switchfully.digibooky.unclebrunodigibooky.service.AuthorisationService;
 import com.switchfully.digibooky.unclebrunodigibooky.service.BookService;
 import org.slf4j.Logger;
@@ -14,9 +17,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -53,25 +54,32 @@ public class BookController {
         return bookDto;
     }
 
+    /**
+     * Story 3
+     *
+     * @param isbn
+     * @return list of books containing (part of) isbn
+     */
     @GetMapping(produces = "application/json", params = "isbn")
     @ResponseStatus(HttpStatus.OK)
     public List<BookDto> search(@RequestParam String isbn) {
-        myLogger.info(isbn+" has been queried");
-           return bookService.searchBookByISBN(isbn).stream()
-                    .map(bookMapper::mapBookToDto)
-                    .toList();
+        myLogger.info(isbn + " has been queried");
+        return bookService.searchBookByISBN(isbn).stream()
+                .map(bookMapper::mapBookToDto)
+                .toList();
     }
 
-    /*As a librarian I want to register a new book so I can keep the collections of books relevant.
-
-The ISBN, title and author's last name are required.
-If any other user besides a librarian tries to register a new book, let the server respond with 403 Forbidden and a custom message.*/
-
-
-    @PostMapping(consumes = "application/json", produces = "application/json" )
+    /**
+     * @param bookDto
+     * @param authorization return : adds a book to the list of books
+     */
+    @PostMapping(consumes = "application/json", produces = "application/json")
     @ResponseStatus(HttpStatus.CREATED)
-    public void registerNewBook (@RequestBody BookDto bookDto) {
+    public void registerNewBook(@RequestBody BookDto bookDto, @RequestHeader(required = false) String authorization) {
+        myLogger.info("RegisterNewBook Method called");
+        authorisationService.validateAuthorisation(DigibookyFeature.REGISTER_NEW_BOOK, authorization);
         Book book = bookMapper.mapBookDtoToBook(bookDto);
         bookService.registerBook(book);
+        myLogger.info("RegisterNewBook Method successfully ended");
     }
 }

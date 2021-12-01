@@ -17,7 +17,13 @@ public class UserRepository {
         userList = new ArrayList<>();
         User adminUser = new User("1","admin","admin","admin@mail.com",
                 new Address(null,0,0,"City"), UserRole.ADMIN);
+        User librarianUser = new User("1","librarian","librarian","librarian@mail.com",
+                new Address(null,0,0,"City"), UserRole.LIBRARIAN);
+        User guestUser = new User("1","guest","guest","guest@mail.com",
+                new Address(null,0,0,"City"), UserRole.GUEST);
         userList.add(adminUser);
+        userList.add(librarianUser);
+        userList.add(guestUser);
     }
 
     public UserRepository(List<User> userList) {
