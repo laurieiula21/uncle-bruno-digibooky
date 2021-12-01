@@ -21,6 +21,7 @@ public class AuthorisationService {
         featureAuthorisations = new HashMap<>();
         //Add your feature with minimum user role required for that feature here
         featureAuthorisations.put(DigibookyFeature.REGISTER_LIBRARIAN, UserRole.ADMIN);
+        featureAuthorisations.put(DigibookyFeature.GET_ALL_USERS, UserRole.ADMIN);
     }
 
     public boolean validateAuthorisation(DigibookyFeature digibookyFeature, String authorization) {

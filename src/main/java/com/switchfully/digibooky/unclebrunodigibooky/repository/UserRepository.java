@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Repository
 public class UserRepository {
@@ -54,6 +55,6 @@ public class UserRepository {
         return userList.stream()
                 .filter(user -> user.getEmail().equals(email))
                 .findFirst()
-                .get();
+                .orElseThrow(() -> new NoSuchElementException("No user found for email: " + email));
     }
 }
