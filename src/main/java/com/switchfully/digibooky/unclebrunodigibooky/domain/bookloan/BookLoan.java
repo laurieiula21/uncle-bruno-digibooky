@@ -1,4 +1,4 @@
-package com.switchfully.digibooky.unclebrunodigibooky.domain;
+package com.switchfully.digibooky.unclebrunodigibooky.domain.bookloan;
 
 import com.switchfully.digibooky.unclebrunodigibooky.domain.book.fine.Fine;
 
@@ -14,11 +14,12 @@ public class BookLoan {
     private LocalDate returnDate;
     private List<Fine> fines;
 
-    public BookLoan(String bookId, String userId, LocalDate lentOutDate) {
+    public BookLoan(String bookId, String userId, LocalDate lentOutDate, LocalDate returnDate) {
         this.loanId = UUID.randomUUID().toString();
         this.bookId = bookId;
         this.userId = userId;
         this.lentOutDate = lentOutDate;
+        this.returnDate = returnDate;
     }
 
     public BookLoan setReturnDate(LocalDate returnDate) {

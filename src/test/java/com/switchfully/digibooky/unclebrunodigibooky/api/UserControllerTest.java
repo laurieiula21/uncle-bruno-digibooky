@@ -10,6 +10,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import io.restassured.RestAssured;
 
+import java.lang.reflect.Type;
+
 import static io.restassured.http.ContentType.JSON;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -29,7 +31,7 @@ class UserControllerTest {
                 .setLastName("Verreydt")
                 .setEmail("driesvv@hotmail.com")
                 .setAddress(myAddress)
-                .setUserRole(UserRole.MEMBER);
+                .setUserRole(UserRole.MEMBER.toString());
 
         UserDto userDto =
                 RestAssured
@@ -52,7 +54,7 @@ class UserControllerTest {
         assertThat(userDto.getLastName()).isEqualTo("Verreydt");
         assertThat(userDto.getEmail()).isEqualTo("driesvv@hotmail.com");
         assertThat(userDto.getAddress()).isEqualTo(myAddress);
-        assertThat(userDto.getUserRole()).isEqualTo(UserRole.MEMBER);
+        assertThat(userDto.getUserRole()).isEqualTo(UserRole.MEMBER.toString());
 
     }
 
@@ -63,6 +65,35 @@ class UserControllerTest {
         String message = RestAssured
                 .given()
                 .body(emptyUserDto)
+                .accept(JSON)
+                .contentType(JSON)
+                .when()
+                .port(port)
+                .post("/users")
+                .then()
+                .assertThat()
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .extract().path("message");
+
+        Assertions.assertThat(message).isEqualTo("User information given is not valid.");
+
+    }
+
+    @Test
+    void createUserMember_givenWrongRole_thenBadRequestResponseIsGivenWithMessage() {
+        Address myAddress = new Address("Vaartstraat", 61, 3000, "Leuven");
+
+        UserDto createUserMemberDto = new UserDto()
+                .setInss("680-60-1053")
+                .setFirstName("Dries")
+                .setLastName("Verreydt")
+                .setEmail("driesvv@hotmail.com")
+                .setAddress(myAddress)
+                .setUserRole(null);
+
+        String message = RestAssured
+                .given()
+                .body(createUserMemberDto)
                 .accept(JSON)
                 .contentType(JSON)
                 .when()

@@ -27,4 +27,8 @@ public class UserService {
     public boolean isUniqueEmail(String email) {
         return userRepository.isUniqueEmail(email);
     }
+
+    public User registerUserAsLibrarian(User memberUser) {
+        return memberUser;
+    }
 }
