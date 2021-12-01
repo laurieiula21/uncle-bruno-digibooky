@@ -1,8 +1,11 @@
 package com.switchfully.digibooky.unclebrunodigibooky.repository;
 
+import com.switchfully.digibooky.unclebrunodigibooky.api.UserController;
 import com.switchfully.digibooky.unclebrunodigibooky.domain.Address;
 import com.switchfully.digibooky.unclebrunodigibooky.domain.user.User;
 import com.switchfully.digibooky.unclebrunodigibooky.domain.user.UserRole;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -16,8 +19,8 @@ public class UserRepository {
 
     public UserRepository() {
         userList = new ArrayList<>();
-        User adminUser = new User("1","admin","admin","admin@mail.com",
-                new Address(null,0,0,"City"), UserRole.ADMIN);
+        User adminUser = new User("1", "admin", "admin", "admin@mail.com",
+                new Address(null, 0, 0, "City"), UserRole.ADMIN);
         userList.add(adminUser);
     }
 
@@ -25,7 +28,7 @@ public class UserRepository {
         this.userList = userList;
     }
 
-    public boolean saveUser(User user){
+    public boolean saveUser(User user) {
         userList.removeIf(member -> member.getId().equals(user.getId()));
         return userList.add(user);
     }
@@ -48,7 +51,7 @@ public class UserRepository {
         return userList.stream()
                 .filter(user -> user.getId().equals(id))
                 .findFirst()
-                .get();
+                .orElseThrow(() -> new NoSuchElementException("No user found for id: " + id));
     }
 
     public User getUserByEmail(String email) {
