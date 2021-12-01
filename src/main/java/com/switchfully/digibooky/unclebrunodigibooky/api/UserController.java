@@ -6,6 +6,8 @@ import com.switchfully.digibooky.unclebrunodigibooky.domain.user.User;
 import com.switchfully.digibooky.unclebrunodigibooky.domain.user.UserDto;
 import com.switchfully.digibooky.unclebrunodigibooky.service.AuthorisationService;
 import com.switchfully.digibooky.unclebrunodigibooky.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +20,7 @@ public class UserController {
     private final AuthorisationService authorisationService;
     private final UserMapper userMapper;
     private final UserValidator userValidator;
+    private final Logger myLogger = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
     public UserController(UserService userService, AuthorisationService authorisationService, UserMapper userMapper, UserValidator userValidator) {
@@ -40,11 +43,14 @@ public class UserController {
     @PutMapping(path = "/register-librarian/{id}", produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
     public UserDto registerLibrarian(@PathVariable("id") String id, @RequestHeader String authorization){
+        myLogger.info("Register librarian method called");
         String userEmail = authorisationService.parseAuthorization(authorization);
         User userByEmail = userService.getUserByEmail(userEmail);
         authorisationService.validateAuthorisation(DigibookyFeature.REGISTER_LIBRARIAN,userByEmail.getUserRole());
         User userMember = userService.getUserById(id);
         User userLibrarian = userService.registerUserAsLibrarian(userMember);
-        return userMapper.mapToUserDto(userLibrarian);
+        UserDto userDto = userMapper.mapToUserDto(userLibrarian);
+        myLogger.info("Register librarian method succesfully concluded");
+        return userDto;
     }
 }
