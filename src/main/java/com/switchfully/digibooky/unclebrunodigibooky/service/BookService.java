@@ -3,6 +3,7 @@ package com.switchfully.digibooky.unclebrunodigibooky.service;
 import com.switchfully.digibooky.unclebrunodigibooky.domain.exceptions.IsbnDoesNotExistException;
 import com.switchfully.digibooky.unclebrunodigibooky.domain.book.Book;
 import com.switchfully.digibooky.unclebrunodigibooky.repository.BookRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,6 +13,7 @@ public class BookService {
 
     private final BookRepository bookRepository;
 
+    @Autowired
     public BookService(BookRepository bookRepository) {
         this.bookRepository = bookRepository;
     }

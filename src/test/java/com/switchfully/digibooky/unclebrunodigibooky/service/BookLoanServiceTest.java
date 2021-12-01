@@ -8,23 +8,35 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @SpringBootTest
 class BookLoanServiceTest {
-    BookLoanService bookLoanService;
 
+    BookLoanService bookLoanService;
+    BookService bookService;
 
     @Test
     void givenBookLoanAndBookRepository_whenLendingABookByIsbn_thenCheckIfIsbnIsInBookLoanRepository() {
-        //Assertions.assertThat(bookLoanService.getAllBookLoans().contains()).isFalse();
-        // when
-//        bookLoanService.lendBook("isbn1");
-//
-//        // then
-//        boolean foundBookLoan = bookLoanService.getAllBookLoans()
-//                .stream()
-//                .anyMatch(bookLoan -> bookLoan.getBookId().equals("isbn1"));
+        List<Book> booksWithIsbn1 = bookService.searchBookByISBN("isbn1");
 
-        //Assertions.assertThat(bookLoanService.getAllBookLoans().contains()).isTrue();
+        Book bookWithId = booksWithIsbn1.stream()
+                .filter(book -> bookLoanService.isBookAvailable(book.getId()))
+                .findFirst()
+                .orElse(null);
+
+        Assertions.assertThat(bookWithId).isNull();
+
+        // When
+        bookLoanService.lendBook("isbn1", "userIdToFind");
+        bookWithId = booksWithIsbn1.stream()
+                .filter(book -> bookLoanService.isBookAvailable(book.getId()))
+                .findFirst()
+                .orElse(null);
+
+        // Then
+        Assertions.assertThat(bookWithId).isNotNull();
     }
 
 }

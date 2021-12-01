@@ -14,7 +14,7 @@ class BookServiceTest {
     BookRepository bookRepository;
 
     @BeforeEach
-    void  beforeEach(){
+    void beforeEach(){
         this.bookRepository=new BookRepository();
         this.bookService=new BookService(bookRepository);
     }
