@@ -1,6 +1,7 @@
 package com.switchfully.digibooky.unclebrunodigibooky.service;
 
 import com.switchfully.digibooky.unclebrunodigibooky.domain.book.Book;
+import com.switchfully.digibooky.unclebrunodigibooky.domain.book.BookDto;
 import com.switchfully.digibooky.unclebrunodigibooky.domain.bookloan.BookLoan;
 import com.switchfully.digibooky.unclebrunodigibooky.domain.exceptions.BookNotAvailableException;
 import org.assertj.core.api.Assertions;
