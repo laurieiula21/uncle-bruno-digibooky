@@ -6,15 +6,21 @@ import com.switchfully.digibooky.unclebrunodigibooky.repository.BookLoanReposito
 import com.switchfully.digibooky.unclebrunodigibooky.repository.BookRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@RunWith(SpringRunner.class)
 @SpringBootTest
 class BookLoanServiceTest {
 
+    @Autowired
     BookLoanService bookLoanService;
+    @Autowired
     BookService bookService;
 
     @Test
@@ -26,7 +32,10 @@ class BookLoanServiceTest {
                 .findFirst()
                 .orElse(null);
 
-        Assertions.assertThat(bookWithId).isNull();
+        /**
+         * Check if book is not already added to the bookloan list. You can lend the book.
+         * */
+        Assertions.assertThat(bookWithId).isNotNull();
 
         // When
         bookLoanService.lendBook("isbn1", "userIdToFind");
@@ -35,8 +44,11 @@ class BookLoanServiceTest {
                 .findFirst()
                 .orElse(null);
 
+        /**
+         * Check if book is added to the bookloan list. The specific book is not available anymore.
+         * */
         // Then
-        Assertions.assertThat(bookWithId).isNotNull();
+        Assertions.assertThat(bookWithId).isNull();
     }
 
 }
