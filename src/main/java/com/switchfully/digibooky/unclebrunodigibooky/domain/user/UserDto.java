@@ -1,7 +1,6 @@
 package com.switchfully.digibooky.unclebrunodigibooky.domain.user;
 
 import com.switchfully.digibooky.unclebrunodigibooky.domain.Address;
-import com.switchfully.digibooky.unclebrunodigibooky.domain.exceptions.InvalidUserException;
 
 public class UserDto {
 
@@ -11,7 +10,7 @@ public class UserDto {
     private String inss;
     private String email;
     private Address address;
-    private UserRole userRole;
+    private String userRole;
 
     public String getId() {
         return id;
@@ -67,11 +66,11 @@ public class UserDto {
         return this;
     }
 
-    public UserRole getUserRole() {
+    public String getUserRole() {
         return userRole;
     }
 
-    public UserDto setUserRole(UserRole userRole) {
+    public UserDto setUserRole(String userRole) {
         this.userRole = userRole;
         return this;
     }
