@@ -2,6 +2,7 @@ package com.switchfully.digibooky.unclebrunodigibooky.service;
 
 import com.switchfully.digibooky.unclebrunodigibooky.domain.DigibookyFeature;
 import com.switchfully.digibooky.unclebrunodigibooky.domain.exceptions.AuthorisationNotGrantedException;
+import com.switchfully.digibooky.unclebrunodigibooky.domain.user.User;
 import com.switchfully.digibooky.unclebrunodigibooky.domain.user.UserRole;
 import org.springframework.stereotype.Service;
 
@@ -12,15 +13,23 @@ import java.util.Map;
 @Service
 public class AuthorisationService {
 
+    private final UserService userService;
     private final Map<DigibookyFeature, UserRole> featureAuthorisations;
 
-    public AuthorisationService() {
+    public AuthorisationService(UserService userService) {
+        this.userService = userService;
         featureAuthorisations = new HashMap<>();
         //Add your feature with minimum user role required for that feature here
         featureAuthorisations.put(DigibookyFeature.REGISTER_LIBRARIAN, UserRole.ADMIN);
     }
 
-    public boolean validateAuthorisation(DigibookyFeature digibookyFeature, UserRole userRole) {
+    public boolean validateAuthorisation(DigibookyFeature digibookyFeature, String authorization) {
+        UserRole userRole = UserRole.GUEST;
+        if(authorization != null) {
+            String userEmail = parseAuthorization(authorization);
+            User userByEmail = userService.getUserByEmail(userEmail);
+            userRole = userByEmail.getUserRole();
+        }
         if (featureAuthorisations.get(digibookyFeature).getAuthorisationLevel() <= userRole.getAuthorisationLevel()) {
             return true;
         }
@@ -29,6 +38,7 @@ public class AuthorisationService {
     }
 
     public String parseAuthorization(String authorization) {
+        System.out.println(authorization);
         String decodedUsernameAndPassword = new String(Base64.getDecoder().decode(authorization.substring("Basic ".length())));
         String username = decodedUsernameAndPassword.substring(0, decodedUsernameAndPassword.indexOf(":"));
         return username;

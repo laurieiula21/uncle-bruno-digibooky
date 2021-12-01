@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/users")
 public class UserController {
@@ -40,13 +42,14 @@ public class UserController {
         return userMapper.mapToUserDto(savedUser);
     }
 
+    /*
+
+     */
     @PutMapping(path = "/register-librarian/{id}", produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
-    public UserDto registerLibrarian(@PathVariable("id") String id, @RequestHeader String authorization){
+    public UserDto registerLibrarian(@PathVariable("id") String id, @RequestHeader(required = false) String authorization){
         myLogger.info("Register librarian method called");
-        String userEmail = authorisationService.parseAuthorization(authorization);
-        User userByEmail = userService.getUserByEmail(userEmail);
-        authorisationService.validateAuthorisation(DigibookyFeature.REGISTER_LIBRARIAN,userByEmail.getUserRole());
+        authorisationService.validateAuthorisation(DigibookyFeature.REGISTER_LIBRARIAN,authorization);
         User userMember = userService.getUserById(id);
         User userLibrarian = userService.registerUserAsLibrarian(userMember);
         UserDto userDto = userMapper.mapToUserDto(userLibrarian);
