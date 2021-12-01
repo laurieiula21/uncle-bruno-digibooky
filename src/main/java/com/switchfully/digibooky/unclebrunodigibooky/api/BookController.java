@@ -5,6 +5,8 @@ import com.switchfully.digibooky.unclebrunodigibooky.api.mapper.BookMapper;
 import com.switchfully.digibooky.unclebrunodigibooky.domain.book.Book;
 import com.switchfully.digibooky.unclebrunodigibooky.service.AuthorisationService;
 import com.switchfully.digibooky.unclebrunodigibooky.service.BookService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,6 +26,7 @@ public class BookController {
     private final BookService bookService;
     private final AuthorisationService authorisationService;
     private final BookMapper bookMapper;
+    private final Logger myLogger = LoggerFactory.getLogger(BookController.class);
 
     @Autowired
     public BookController(BookService bookService, AuthorisationService authorisationService, BookMapper bookMapper) {
@@ -53,6 +56,7 @@ public class BookController {
     @GetMapping(produces = "application/json", params = "isbn")
     @ResponseStatus(HttpStatus.OK)
     public List<BookDto> search(@RequestParam String isbn) {
+        myLogger.info(isbn+" has been queried");
            return bookService.searchBookByISBN(isbn).stream()
                     .map(bookMapper::mapBookToDto)
                     .toList();
