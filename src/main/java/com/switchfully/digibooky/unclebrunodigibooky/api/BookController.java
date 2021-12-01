@@ -61,4 +61,17 @@ public class BookController {
                     .map(bookMapper::mapBookToDto)
                     .toList();
     }
+
+    /*As a librarian I want to register a new book so I can keep the collections of books relevant.
+
+The ISBN, title and author's last name are required.
+If any other user besides a librarian tries to register a new book, let the server respond with 403 Forbidden and a custom message.*/
+
+
+    @PostMapping(consumes = "application/json", produces = "application/json" )
+    @ResponseStatus(HttpStatus.CREATED)
+    public void registerNewBook (@RequestBody BookDto bookDto) {
+        Book book = bookMapper.mapBookDtoToBook(bookDto);
+        bookService.registerBook(book);
+    }
 }
