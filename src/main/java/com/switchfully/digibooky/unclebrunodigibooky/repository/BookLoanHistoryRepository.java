@@ -3,15 +3,14 @@ package com.switchfully.digibooky.unclebrunodigibooky.repository;
 import com.switchfully.digibooky.unclebrunodigibooky.domain.bookloan.BookLoan;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Repository
-public class BookLoanRepository {
+public class BookLoanHistoryRepository {
     private final List<BookLoan> bookLoanList;
 
-    public BookLoanRepository() {
-        this.bookLoanList = new ArrayList<>();
+    public BookLoanHistoryRepository(List<BookLoan> bookLoanList) {
+        this.bookLoanList = bookLoanList;
     }
 
     public void addBookLoan(BookLoan bookLoan) {
@@ -20,15 +19,5 @@ public class BookLoanRepository {
 
     public List<BookLoan> getBookLoanList() {
         return bookLoanList;
-    }
-
-
-    public BookLoan removeBookLoanBy(String bookId) {
-        BookLoan bookLoan = bookLoanList.stream()
-                .filter(bookloan -> bookloan.getBookId().equals(bookId))
-                .findFirst()
-                .orElseGet(null);
-        bookLoanList.remove(bookLoan);
-        return bookLoan;
     }
 }

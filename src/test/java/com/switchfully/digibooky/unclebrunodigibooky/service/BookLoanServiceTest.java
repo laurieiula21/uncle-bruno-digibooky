@@ -9,6 +9,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+
 import java.util.List;
 
 
@@ -50,13 +51,34 @@ class BookLoanServiceTest {
     }
 
     @Test
-    void givenANotAvailableBook_whenTryingToLendThatBook_thenThrowBookNotAvailableException(){
+    void givenANotAvailableBook_whenTryingToLendThatBook_thenThrowBookNotAvailableException() {
         // Given
         // When
         bookLoanService.lendBook("isbn2", "userIdToFind");
         // Then
         assertThatExceptionOfType(BookNotAvailableException.class)
                 .isThrownBy(() -> bookLoanService.lendBook("isbn2", "userIdToFind"));
+    }
+
+    @Test
+    void givenABookIdThatIsInTheLoanRepository_whenTryingToRemoveThatBook_thenBookIsNotInTheRepository() {
+        // given
+        bookLoanService.lendBook("isbn3", "userIdToFind");
+        List<Book> booksWithIsbn1 = bookService.searchBookByISBN("isbn3");
+        Book bookWithId = booksWithIsbn1.stream()
+                .filter(book -> !bookLoanService.isBookAvailable(book.getId()))
+                .findFirst()
+                .orElse(null);
+
+        // when
+        bookLoanService.returnBook(bookWithId.getId());
+
+        // then
+        bookWithId = booksWithIsbn1.stream()
+                .filter(book -> !bookLoanService.isBookAvailable(book.getId()))
+                .findFirst()
+                .orElse(null);
+        Assertions.assertThat(bookWithId).isNull();
     }
 
 
