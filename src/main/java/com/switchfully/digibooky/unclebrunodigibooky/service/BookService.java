@@ -44,4 +44,7 @@ public class BookService {
         bookRepository.addBook(book);
     }
 
+    public List<Book> getBooksWithTitle(String myTitle) {
+        return null;
+    }
 }
