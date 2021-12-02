@@ -20,9 +20,9 @@ class BookRepositoryTest {
     void givenABookRepositoryWithThreeBooks_WhenAddingThreeBooksToTheRepository_ThenListSizeShouldBeSix(){
         // Given
         int originalBookListSize = bookRepository.getAllBooks().size();
-        bookRepository.addBook(new Book("isbn1", "Title 1", new Author("First", "Last"),"This is the summary of 69" ));
-        bookRepository.addBook(new Book("isbn2", "Title 2", new Author("First", "Last"),"This is the summary of 69" ));
-        bookRepository.addBook(new Book("isbn3", "Title 3", new Author("First", "Last"),"This is the summary of 69" ));
+        bookRepository.addBook(new Book("isbn7", "Title 1", new Author("First", "Last"),"This is the summary of 69" ));
+        bookRepository.addBook(new Book("isbn8", "Title 2", new Author("First", "Last"),"This is the summary of 69" ));
+        bookRepository.addBook(new Book("isbn9", "Title 3", new Author("First", "Last"),"This is the summary of 69" ));
 
         // When
         int numberOfBooks = bookRepository.getAllBooks().size();
