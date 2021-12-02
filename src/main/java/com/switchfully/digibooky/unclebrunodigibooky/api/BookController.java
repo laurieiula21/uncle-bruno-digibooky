@@ -5,6 +5,7 @@ import com.switchfully.digibooky.unclebrunodigibooky.domain.book.BookDto;
 import com.switchfully.digibooky.unclebrunodigibooky.api.mapper.BookMapper;
 import com.switchfully.digibooky.unclebrunodigibooky.domain.book.Book;
 import com.switchfully.digibooky.unclebrunodigibooky.domain.book.EnhancedBookDto;
+import com.switchfully.digibooky.unclebrunodigibooky.domain.user.UserRole;
 import com.switchfully.digibooky.unclebrunodigibooky.service.AuthorisationService;
 import com.switchfully.digibooky.unclebrunodigibooky.service.BookLoanService;
 import com.switchfully.digibooky.unclebrunodigibooky.service.BookService;
@@ -43,7 +44,7 @@ public class BookController {
     @ResponseStatus(HttpStatus.OK)
     public List<BookDto> getAllBooks(@RequestHeader(required = false) String authorization) {
         myLogger.info("get all books method has been queried");
-        authorisationService.validateAuthorisation(DigibookyFeature.GET_ALL_BOOKS, authorization);
+        authorisationService.getAuthorisationLevel(DigibookyFeature.GET_ALL_BOOKS, authorization);
         List<Book> bookList = bookService.getAllBooks();
         List<BookDto> bookDtoList = bookList.stream()
                 .map(bookMapper::mapBookToDto)
@@ -56,9 +57,12 @@ public class BookController {
     @ResponseStatus(HttpStatus.OK)
     public EnhancedBookDto getBook(@PathVariable("isbn") String isbn, @RequestHeader(required = false) String authorization) {
         myLogger.info("getBook method launched");
-        authorisationService.validateAuthorisation(DigibookyFeature.GET_ENHANCED_BOOK, authorization);
+        authorisationService.getAuthorisationLevel(DigibookyFeature.GET_BOOK, authorization);
         Book book = bookService.getOneBook(isbn);
-        String userInformationString = bookLoanService.getBookDetails(book);
+        String userInformationString = "";
+        if (UserRole.MEMBER.getAuthorisationLevel() <= authorisationService.getAuthorisationLevel(authorization)) {
+            userInformationString = bookLoanService.getBookDetails(book);
+        }
         EnhancedBookDto enhancedBookDto = bookMapper.mapBookToEnhancedDto(book, userInformationString);
         myLogger.info("getBook method finished");
         return enhancedBookDto;
@@ -74,7 +78,7 @@ public class BookController {
     @ResponseStatus(HttpStatus.OK)
     public List<BookDto> search(@RequestParam String isbn, @RequestHeader(required = false) String authorization) {
         myLogger.info("search method by isbn " + isbn + " has been queried");
-        authorisationService.validateAuthorisation(DigibookyFeature.SEARCH_BOOK_BY_ISBN, authorization);
+        authorisationService.getAuthorisationLevel(DigibookyFeature.SEARCH_BOOK_BY_ISBN, authorization);
         List<BookDto> bookDtosByIbn = bookService.searchBookByISBN(isbn).stream()
                 .map(bookMapper::mapBookToDto)
                 .toList();
@@ -90,7 +94,7 @@ public class BookController {
     @ResponseStatus(HttpStatus.CREATED)
     public void registerNewBook(@RequestBody BookDto bookDto, @RequestHeader(required = false) String authorization) {
         myLogger.info("RegisterNewBook Method called");
-        authorisationService.validateAuthorisation(DigibookyFeature.REGISTER_NEW_BOOK, authorization);
+        authorisationService.getAuthorisationLevel(DigibookyFeature.REGISTER_NEW_BOOK, authorization);
         Book book = bookMapper.mapBookDtoToBook(bookDto);
         bookService.registerBook(book);
         myLogger.info("RegisterNewBook Method successfully ended");
@@ -100,7 +104,7 @@ public class BookController {
     @ResponseStatus(HttpStatus.OK)
     public Collection<BookDto> searchBookByTitle(@RequestParam String title, @RequestHeader(required = false) String authorization){
         myLogger.info("Search book by title method is called");
-        authorisationService.validateAuthorisation(DigibookyFeature.SEARCH_BOOK_BY_TITLE, authorization);
+        authorisationService.getAuthorisationLevel(DigibookyFeature.SEARCH_BOOK_BY_TITLE, authorization);
         Collection<Book> books = bookService.searchBooksByTitle(title);
         Collection<BookDto> bookDtos =  books.stream()
                 .map(bookMapper::mapBookToDto)
@@ -118,7 +122,7 @@ public class BookController {
     @ResponseStatus(HttpStatus.OK)
     public List<BookDto> searchBookByAuthor(@RequestParam() String authorName, @RequestHeader(required = false) String authorization){
         myLogger.info("search started for "+ authorName);
-        authorisationService.validateAuthorisation(DigibookyFeature.SEARCH_BOOK_BY_AUTHOR, authorization);
+        authorisationService.getAuthorisationLevel(DigibookyFeature.SEARCH_BOOK_BY_AUTHOR, authorization);
         List<BookDto> listOfBooksByAuthorName =  bookService.searchBookByAuthor(authorName).stream()
                 .map(bookMapper::mapBookToDto)
                 .toList();
@@ -131,7 +135,7 @@ public class BookController {
     public BookDto updateBook(@PathVariable("isbn") String isbn, @RequestBody BookDto bookDto,
                               @RequestHeader(required = false) String authorization){
         myLogger.info("Updating book method called for isbn: " + isbn);
-        authorisationService.validateAuthorisation(DigibookyFeature.UPDATE_BOOK, authorization);
+        authorisationService.getAuthorisationLevel(DigibookyFeature.UPDATE_BOOK, authorization);
         Book bookToUpdate = bookMapper.mapBookDtoToBook(bookDto);
         Book updatedBook = bookService.updateBook(isbn, bookToUpdate);
         BookDto updatedBookDto = bookMapper.mapBookToDto(updatedBook);
@@ -143,7 +147,7 @@ public class BookController {
     @ResponseStatus(HttpStatus.OK)
     public BookDto deleteBook(@PathVariable("bookId") String bookId, @RequestHeader(required = false) String authorization){
         myLogger.info("Deleting book method called for bookId: " + bookId);
-        authorisationService.validateAuthorisation(DigibookyFeature.DELETE_BOOK, authorization);
+        authorisationService.getAuthorisationLevel(DigibookyFeature.DELETE_BOOK, authorization);
         Book book = bookService.deleteBookBy(bookId);
         BookDto bookDto = bookMapper.mapBookToDto(book);
         myLogger.info("Deleting succeeded for bookId " + bookId);

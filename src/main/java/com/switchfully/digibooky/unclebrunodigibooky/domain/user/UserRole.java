@@ -12,6 +12,15 @@ public enum UserRole {
         this.authorisationLevel = authorisationLevel;
     }
 
+    public static UserRole getNameForAuthorisationLevel(int authorisationLevel) {
+        return switch (authorisationLevel) {
+            case 1 -> MEMBER;
+            case 2 -> LIBRARIAN;
+            case 3 -> ADMIN;
+            default -> GUEST;
+        };
+    }
+
     public int getAuthorisationLevel() {
         return authorisationLevel;
     }

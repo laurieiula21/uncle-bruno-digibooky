@@ -41,20 +41,26 @@ public class AuthorisationService {
         featureAuthorisations.put(DigibookyFeature.DELETE_BOOK, UserRole.LIBRARIAN);
         featureAuthorisations.put(DigibookyFeature.UPDATE_BOOK, UserRole.LIBRARIAN);
         featureAuthorisations.put(DigibookyFeature.GET_ENHANCED_BOOK, UserRole.MEMBER);
+        featureAuthorisations.put(DigibookyFeature.GET_BOOK, UserRole.GUEST);
     }
 
-    public boolean validateAuthorisation(DigibookyFeature digibookyFeature, String authorization) {
+    public boolean getAuthorisationLevel(DigibookyFeature digibookyFeature, String authorization) {
+
+        if (featureAuthorisations.get(digibookyFeature).getAuthorisationLevel() <= getAuthorisationLevel(authorization)) {
+            return true;
+        }
+        throw new AuthorisationNotGrantedException("User with role " + UserRole.getNameForAuthorisationLevel(getAuthorisationLevel(authorization)).name().toLowerCase() +
+                " does not have rights to feature " + digibookyFeature.name().toLowerCase());
+    }
+
+    public int getAuthorisationLevel(String authorization) {
         UserRole userRole = UserRole.GUEST;
         if(authorization != null) {
             String userEmail = parseAuthorization(authorization);
             User userByEmail = userService.getUserByEmail(userEmail);
             userRole = userByEmail.getUserRole();
         }
-        if (featureAuthorisations.get(digibookyFeature).getAuthorisationLevel() <= userRole.getAuthorisationLevel()) {
-            return true;
-        }
-        throw new AuthorisationNotGrantedException("User with role " + userRole.name().toLowerCase() +
-                " does not have rights to feature " + digibookyFeature.name().toLowerCase());
+        return userRole.getAuthorisationLevel();
     }
 
     public String parseAuthorization(String authorization) {

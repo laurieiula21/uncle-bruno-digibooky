@@ -37,7 +37,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.CREATED)
     public UserDto registerUser(@RequestBody UserDto userDto, @RequestHeader(required = false) String authorization) {
         myLogger.info("Register user method called");
-        authorisationService.validateAuthorisation(DigibookyFeature.REGISTER_USER, authorization);
+        authorisationService.getAuthorisationLevel(DigibookyFeature.REGISTER_USER, authorization);
         UserDto validatedUserDto = userValidator.validate(userDto);
         User user = userMapper.mapToUser(validatedUserDto);
         User savedUser = userService.saveUser(user);
@@ -50,7 +50,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     public UserDto registerLibrarian(@PathVariable("id") String id, @RequestHeader(required = false) String authorization) {
         myLogger.info("Register librarian method called");
-        authorisationService.validateAuthorisation(DigibookyFeature.REGISTER_LIBRARIAN, authorization);
+        authorisationService.getAuthorisationLevel(DigibookyFeature.REGISTER_LIBRARIAN, authorization);
         User userMember = userService.getUserById(id);
         User userLibrarian = userService.registerUserAsLibrarian(userMember);
         UserDto userDto = userMapper.mapToUserDto(userLibrarian);
@@ -62,7 +62,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     public Collection<UserDto> getAllUsers(@RequestHeader(required = false) String authorization) {
         myLogger.info("Get all users method called");
-        authorisationService.validateAuthorisation(DigibookyFeature.GET_ALL_USERS, authorization);
+        authorisationService.getAuthorisationLevel(DigibookyFeature.GET_ALL_USERS, authorization);
 
         Collection<UserDto> users = userService.getUsers().stream()
                 .map(userMapper::mapToUserDtoWithoutInss)

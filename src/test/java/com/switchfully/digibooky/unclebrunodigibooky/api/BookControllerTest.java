@@ -1,10 +1,8 @@
 package com.switchfully.digibooky.unclebrunodigibooky.api;
 
-import com.switchfully.digibooky.unclebrunodigibooky.domain.book.Author;
+import com.switchfully.digibooky.unclebrunodigibooky.domain.book.*;
 import com.switchfully.digibooky.unclebrunodigibooky.api.mapper.BookMapper;
 import com.switchfully.digibooky.unclebrunodigibooky.domain.book.Author;
-import com.switchfully.digibooky.unclebrunodigibooky.domain.book.Book;
-import com.switchfully.digibooky.unclebrunodigibooky.domain.book.BookDto;
 import com.switchfully.digibooky.unclebrunodigibooky.repository.BookRepository;
 import com.switchfully.digibooky.unclebrunodigibooky.service.BookService;
 import io.restassured.RestAssured;
@@ -75,13 +73,13 @@ class BookControllerTest {
     @Test
     void GivenAnISBN_WhenGettingOneBook_ThenReceiveHttpStatusOKAndSaidSpecificBook() {
         Book book = new Book("isbn1", "Title 1", new Author("First", "Last"), "This is the summary of 69");
-        BookDto expectedBookDto = new BookDto()
+        EnhancedBookDto expectedBookDto = new EnhancedBookDto()
                 .setTitle("Title 1")
                 .setAuthor(new Author("First", "Last"))
                 .setIsbn("isbn1")
                 .setSummary("This is the summary of 69");
 
-        BookDto actualBookDto =
+        EnhancedBookDto actualBookDto =
                 RestAssured
                         .given()
                         .when()

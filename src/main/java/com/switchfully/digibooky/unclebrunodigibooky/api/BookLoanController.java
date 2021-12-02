@@ -39,7 +39,7 @@ public class BookLoanController {
     public void lendBook(@RequestBody CreateBookLoanDto createBookLoanDto, @RequestHeader(required = false) String authorization) {
         myLogger.info("Loan: isbn:" + createBookLoanDto.getIsbn() + " by user: " + createBookLoanDto.getUserId() + " has been queried");
         userService.getUserById(createBookLoanDto.getUserId());
-        authorisationService.validateAuthorisation(DigibookyFeature.LEND_BOOK, authorization);
+        authorisationService.getAuthorisationLevel(DigibookyFeature.LEND_BOOK, authorization);
         bookLoanService.lendBook(createBookLoanDto.getIsbn(), createBookLoanDto.getUserId());
         myLogger.info("Created loan: isbn:" + createBookLoanDto.getIsbn() + " by user: " + createBookLoanDto.getUserId());
     }
@@ -48,7 +48,7 @@ public class BookLoanController {
     @ResponseStatus(HttpStatus.OK)
     public String returnBook(@PathVariable("bookloanId") String bookloanId, @RequestHeader(required = false) String authorization) {
         myLogger.info("Returning bookId: " + bookloanId + " .");
-        authorisationService.validateAuthorisation(DigibookyFeature.RETURN_BOOK, authorization);
+        authorisationService.getAuthorisationLevel(DigibookyFeature.RETURN_BOOK, authorization);
         String message = bookLoanService.returnBook(bookloanId);
         myLogger.info("Returning book successful.");
         return message;
@@ -58,7 +58,7 @@ public class BookLoanController {
     @ResponseStatus(HttpStatus.OK)
     public List<BookDto> getAllBorrowedBooksBy(@RequestParam String userId, @RequestHeader(required = false) String authorization) {
         myLogger.info("Borrowed books by user with id: " + userId + " .");
-        authorisationService.validateAuthorisation(DigibookyFeature.GET_ALL_BORROWED_BOOKS_OF_USER, authorization);
+        authorisationService.getAuthorisationLevel(DigibookyFeature.GET_ALL_BORROWED_BOOKS_OF_USER, authorization);
         List<Book> booksBorrowedByUser = bookLoanService.getBooksBorrowedBy(userId);
         List<BookDto> bookDtoList = booksBorrowedByUser.stream()
                 .map(bookMapper::mapBookToDto)
@@ -71,7 +71,7 @@ public class BookLoanController {
     @ResponseStatus(HttpStatus.OK)
     public List<BookDto> getAllOverdueBooks(@RequestHeader(required = false) String authorization) {
         myLogger.info("Get all overdue books");
-        authorisationService.validateAuthorisation(DigibookyFeature.GET_ALL_OVERDUE_BOOKS, authorization);
+        authorisationService.getAuthorisationLevel(DigibookyFeature.GET_ALL_OVERDUE_BOOKS, authorization);
         List<Book> overdueBooks = bookLoanService.getAllOverdueBooks();
         List<BookDto> bookDtoList = overdueBooks.stream()
                 .map(bookMapper::mapBookToDto)
