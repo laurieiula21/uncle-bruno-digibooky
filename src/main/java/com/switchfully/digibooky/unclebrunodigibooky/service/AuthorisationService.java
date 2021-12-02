@@ -29,6 +29,7 @@ public class AuthorisationService {
         featureAuthorisations.put(DigibookyFeature.RETURN_BOOK, UserRole.MEMBER);
         featureAuthorisations.put(DigibookyFeature.LEND_BOOK, UserRole.MEMBER);
         featureAuthorisations.put(DigibookyFeature.GET_ALL_BORROWED_BOOKS_OF_USER, UserRole.LIBRARIAN);
+        featureAuthorisations.put(DigibookyFeature.GET_ALL_OVERDUE_BOOKS, UserRole.LIBRARIAN);
 
         // BookFeatures
         featureAuthorisations.put(DigibookyFeature.GET_ALL_BOOKS, UserRole.GUEST);

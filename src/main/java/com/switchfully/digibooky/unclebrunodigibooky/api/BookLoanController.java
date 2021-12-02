@@ -56,12 +56,27 @@ public class BookLoanController {
 
     @GetMapping(produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
-    public List<BookDto> getAllBorrowedBooksBy(@RequestParam String userId, @RequestHeader(required = false) String authorization){
+    public List<BookDto> getAllBorrowedBooksBy(@RequestParam String userId, @RequestHeader(required = false) String authorization) {
         myLogger.info("Borrowed books by user with id: " + userId + " .");
         authorisationService.validateAuthorisation(DigibookyFeature.GET_ALL_BORROWED_BOOKS_OF_USER, authorization);
         List<Book> booksBorrowedByUser = bookLoanService.getBooksBorrowedBy(userId);
-        List<BookDto> bookDtoList = booksBorrowedByUser.stream().map(book -> bookMapper.mapBookToDto(book)).collect(Collectors.toList());
+        List<BookDto> bookDtoList = booksBorrowedByUser.stream()
+                .map(bookMapper::mapBookToDto)
+                .collect(Collectors.toList());
         myLogger.info("Returning borrowed Book Dtos of user successful.");
+        return bookDtoList;
+    }
+
+    @GetMapping(path = "/overdueBooks", produces = "application/json")
+    @ResponseStatus(HttpStatus.OK)
+    public List<BookDto> getAllOverdueBooks(@RequestHeader(required = false) String authorization) {
+        myLogger.info("Get all overdue books");
+        authorisationService.validateAuthorisation(DigibookyFeature.GET_ALL_OVERDUE_BOOKS, authorization);
+        List<Book> overdueBooks = bookLoanService.getAllOverdueBooks();
+        List<BookDto> bookDtoList = overdueBooks.stream()
+                .map(bookMapper::mapBookToDto)
+                .collect(Collectors.toList());
+        myLogger.info("Getting all overdue books successful.");
         return bookDtoList;
     }
 

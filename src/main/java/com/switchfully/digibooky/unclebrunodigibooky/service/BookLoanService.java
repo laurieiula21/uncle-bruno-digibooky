@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 @Service
 public class BookLoanService {
 
+    public static final int WEEKS_UNTIL_DUE = 3;
     private final BookLoanRepository bookLoanRepository;
     private final BookLoanHistoryRepository bookLoanHistoryRepository;
     private final BookService bookService;
@@ -39,7 +40,7 @@ public class BookLoanService {
         }
         String userId = validUserId;
         LocalDate lentOutDate = LocalDate.now();
-        LocalDate returnDate = LocalDate.now().plusWeeks(3);
+        LocalDate returnDate = LocalDate.now().plusWeeks(WEEKS_UNTIL_DUE);
         BookLoan bookLoan = new BookLoan(bookId, userId, lentOutDate, returnDate);
         bookLoanRepository.addBookLoan(bookLoan);
         return bookLoan.getLoanId();
@@ -63,9 +64,25 @@ public class BookLoanService {
     public List<Book> getBooksBorrowedBy(String userId) {
         List<Book> borrowedBooksByUser = bookLoanRepository.getBookLoanList().stream()
                 .filter(book -> book.getUserId().equals(userId))
-                .map(BookLoan::getBookId)
-                .map(bookService::getBookBy)
+                .map(this::getBookFromLoan)
                 .collect(Collectors.toList());
         return borrowedBooksByUser;
+    }
+
+    public List<Book> getAllOverdueBooks() {
+        List<Book> allOverdueBooks = bookLoanRepository.getBookLoanList().stream()
+                .filter(this::isBookLate)
+                .map(this::getBookFromLoan)
+                .collect(Collectors.toList());
+        return allOverdueBooks;
+    }
+
+    private boolean isBookLate(BookLoan bookLoan) {
+        return LocalDate.now().isAfter(bookLoan.getReturnDate());
+    }
+
+    public Book getBookFromLoan(BookLoan bookLoan) {
+        Book foundBook = bookService.getBookBy(bookLoan.getBookId());
+        return foundBook;
     }
 }

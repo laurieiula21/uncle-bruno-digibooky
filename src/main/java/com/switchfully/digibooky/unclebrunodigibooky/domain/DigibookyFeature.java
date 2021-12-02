@@ -9,5 +9,6 @@ public enum DigibookyFeature {
     RETURN_BOOK,
     GET_ALL_BOOKS,
     REGISTER_NEW_BOOK,
+    GET_ALL_OVERDUE_BOOKS,
     GET_ALL_BORROWED_BOOKS_OF_USER;
 }

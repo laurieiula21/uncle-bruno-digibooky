@@ -3,6 +3,7 @@ package com.switchfully.digibooky.unclebrunodigibooky.repository;
 import com.switchfully.digibooky.unclebrunodigibooky.domain.bookloan.BookLoan;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -30,5 +31,11 @@ public class BookLoanRepository {
                 .orElseThrow(() -> new NoSuchElementException("The bookloan id isn't in the repository."));
         bookLoanList.remove(bookLoan);
         return bookLoan;
+    }
+
+    public void setReturnDate(String bookLoanId, LocalDate newReturnDate) {
+        bookLoanList.stream()
+                .filter(bookLoan -> bookLoan.getLoanId().equals(bookLoanId))
+                .forEach(bookLoan -> bookLoan.setReturnDate(newReturnDate));
     }
 }
