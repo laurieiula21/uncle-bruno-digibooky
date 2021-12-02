@@ -4,6 +4,7 @@ import com.switchfully.digibooky.unclebrunodigibooky.domain.exceptions.IsbnDoesN
 import com.switchfully.digibooky.unclebrunodigibooky.domain.book.Book;
 import com.switchfully.digibooky.unclebrunodigibooky.repository.BookRepository;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -19,7 +20,7 @@ public class BookService {
 
     private final BookRepository bookRepository;
 
-
+    @Autowired
     public BookService(BookRepository bookRepository) {
         this.bookRepository = bookRepository;
     }
@@ -66,9 +67,13 @@ public class BookService {
 
     public Collection<Book> searchBooksByTitle(String title) {
 
-        return bookRepository.getAllBooks().stream()
-                .filter(book -> book.getTitle().matches(title))
+        String query = title.replaceAll("\\*", "\\.\\*").replaceAll("\\?", "\\.\\?");
+
+        List<Book> booksByTitle = bookRepository.getAllBooks().stream()
+                .filter(book -> book.getTitle().matches(query))
                 .collect(Collectors.toList());
+
+        return booksByTitle;
     }
 
     public List<Book> searchBookByAuthor(String authorName) {
