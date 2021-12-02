@@ -104,7 +104,7 @@ public class BookController {
      * @param authorName - enter author firstname or lastname
      * @return books written by given author
      */
-    @GetMapping(produces="application/json", params="authorName")
+    @GetMapping(path="/search-by-author", produces="application/json", params="authorName")
     @ResponseStatus(HttpStatus.OK)
     public List<BookDto> searchBookByAuthor(@RequestParam() String authorName){
 
