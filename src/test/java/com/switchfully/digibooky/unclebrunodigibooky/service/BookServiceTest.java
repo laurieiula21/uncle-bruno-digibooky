@@ -87,6 +87,18 @@ class BookServiceTest {
         String myTitle = "exampleTitle";
         Book book = new Book(null,myTitle,null,null);
         bookService.registerBook(book);
-        Assertions.assertThat(bookService.searchBooksByTitle(".*Title")).contains(book);
+        Assertions.assertThat(bookService.searchBooksByTitle("*Title")).contains(book);
+    }
+
+    @Test
+    void givenBooks_whenSearchingForBooksWithOnlyWildcard_thenAllBooksInTheListReturned() {
+        String myTitle1 = "exampleTitle1";
+        Book book1 = new Book(null,myTitle1,null,null);
+        String myTitle2 = "exampleTitle2";
+        Book book2 = new Book(null,myTitle2,null,null);
+        bookService.registerBook(book1);
+        bookService.registerBook(book2);
+        Assertions.assertThat(bookService.searchBooksByTitle("*")).contains(book1);
+        Assertions.assertThat(bookService.searchBooksByTitle("*")).contains(book2);
     }
 }

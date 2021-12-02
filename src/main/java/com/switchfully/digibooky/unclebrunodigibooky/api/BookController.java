@@ -87,7 +87,7 @@ public class BookController {
         myLogger.info("RegisterNewBook Method successfully ended");
     }
 
-    @GetMapping(path = "/search", produces = "application/json")
+    @GetMapping(path = "/search-by-title", produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
     public Collection<BookDto> searchBookByTitle(@RequestParam String title){
         myLogger.info("Search book by title method is called");
