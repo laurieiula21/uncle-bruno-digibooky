@@ -40,11 +40,12 @@ public class BookRepository {
         return book;
     }
 
-    public void deleteBook(String bookId) {
+    public Book deleteBook(String bookId) {
         Book bookToFind = getAllBooks().stream()
                 .filter(book -> book.getId().equals(bookId))
                 .findFirst()
                 .orElseThrow(() -> new NoSuchElementException("Book with ID: " + bookId + " not found, so it can't be deleted!"));
         bookList.remove(bookToFind);
+        return bookToFind;
     }
 }

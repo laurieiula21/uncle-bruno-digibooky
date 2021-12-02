@@ -117,10 +117,10 @@ public class BookService {
 
     }
 
-    public void deleteBookBy(String bookId) {
+    public Book deleteBookBy(String bookId) {
         if (isBookAvailable(bookId)){
-            bookHistoryRepository.addBook(getBookBy(bookId));
-            bookRepository.deleteBook(bookId);
+             bookHistoryRepository.addBook(getBookBy(bookId));
+            return bookRepository.deleteBook(bookId);
         } else {
             throw new BookNotAvailableException("Book is lent out! Not possible to delete it");
         }

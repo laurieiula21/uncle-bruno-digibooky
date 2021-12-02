@@ -125,6 +125,16 @@ public class BookController {
         BookDto updatedBookDto = bookMapper.mapBookToDto(updatedBook);
         myLogger.info("Updating succeeded for isbn " + updatedBookDto.getIsbn());
         return updatedBookDto;
+    }
 
+    @PutMapping(path = "/{bookId}", consumes = "application/json", produces = "application/json")
+    @ResponseStatus(HttpStatus.OK)
+    public BookDto updateBook(@PathVariable("bookId") String bookId, @RequestHeader(required = false) String authorization){
+        myLogger.info("Deleting book method called for bookId: " + bookId);
+        authorisationService.validateAuthorisation(DigibookyFeature.DELETE_BOOK, authorization);
+        Book book = bookService.deleteBookBy(bookId);
+        BookDto bookDto = bookMapper.mapBookToDto(book);
+        myLogger.info("Deleting succeeded for bookId " + bookId);
+        return bookDto;
     }
 }
