@@ -95,4 +95,7 @@ public class BookService {
         return booksByAuthorName;
     }
 
+    public Book updateBook(String isbn, Book bookToUpdate) {
+        return null;
+    }
 }

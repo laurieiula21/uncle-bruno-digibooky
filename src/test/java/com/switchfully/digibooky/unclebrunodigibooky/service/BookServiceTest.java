@@ -109,4 +109,20 @@ class BookServiceTest {
         Assertions.assertThat(bookService.searchBooksByTitle("*")).contains(book1);
         Assertions.assertThat(bookService.searchBooksByTitle("*")).contains(book2);
     }
+
+    @Test
+    void givenExistingBook_whenUpdatingBookWithNewInformation_thenBooksInformationIsAllUpdated(){
+        Author author = new Author("lastName","firstName");
+        Book oldBook = new Book("realIsbn","title",author,"summary");
+        bookService.registerBook(oldBook);
+
+        Author newAuthor = new Author("newLastName","newFirstName");
+        Book bookToUpdate = new Book("fakeIsbn","newTitle",newAuthor,"newSummary");
+        Book updatedBook = bookService.updateBook(oldBook.getIsbn(),bookToUpdate);
+
+        Assertions.assertThat(updatedBook.getIsbn()).isNotEqualTo(bookToUpdate.getIsbn());
+        Assertions.assertThat(updatedBook.getTitle()).isEqualTo(bookToUpdate.getTitle());
+        Assertions.assertThat(updatedBook.getAuthor()).isEqualTo(bookToUpdate.getAuthor());
+        Assertions.assertThat(updatedBook.getSummary()).isEqualTo(bookToUpdate.getSummary());
+    }
 }

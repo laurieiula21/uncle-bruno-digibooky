@@ -44,6 +44,11 @@ class BookControllerTest {
                 .setAuthor(new Author("Third", "Last"))
                 .setIsbn("isbn3")
                 .setSummary("This is the summary of 69"));
+        bookDtoList.add(new BookDto()
+                .setTitle("Title 4")
+                .setAuthor(new Author("First", "Last"))
+                .setIsbn("isbn4")
+                .setSummary("This is the summary of 69"));
 
         List<BookDto> bookList =
                 RestAssured
