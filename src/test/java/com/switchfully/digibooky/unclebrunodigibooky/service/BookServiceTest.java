@@ -76,18 +76,26 @@ class BookServiceTest {
     }
     @Test
     void givenBookWithTitleInList_whenSearchingForBooksWithFullTitle_thenBookWithMatchInTitleIsInTheListReturned() {
-        String myTitle = "exampleTitle";
-        Book book = new Book(null,myTitle,null,null);
-        bookService.registerBook(book);
-        Assertions.assertThat(bookService.searchBooksByTitle(myTitle)).contains(book);
+        String myTitle1 = "exampleTitle";
+        Book book1 = new Book(null,myTitle1,null,null);
+        String myTitle2 = "notAMatch";
+        Book book2 = new Book(null,myTitle2,null,null);
+        bookService.registerBook(book1);
+        bookService.registerBook(book2);
+        Assertions.assertThat(bookService.searchBooksByTitle(myTitle1)).contains(book1);
+        Assertions.assertThat(bookService.searchBooksByTitle(myTitle1)).doesNotContain(book2);
     }
 
     @Test
     void givenBookWithTitleInList_whenSearchingForBooksWithWildcardsTitle_thenBookWithMatchInTitleIsInTheListReturned() {
-        String myTitle = "exampleTitle";
-        Book book = new Book(null,myTitle,null,null);
-        bookService.registerBook(book);
-        Assertions.assertThat(bookService.searchBooksByTitle("*Title")).contains(book);
+        String myTitle1 = "exampleTitle";
+        Book book1 = new Book(null,myTitle1,null,null);
+        String myTitle2 = "notAMatch";
+        Book book2 = new Book(null,myTitle2,null,null);
+        bookService.registerBook(book1);
+        bookService.registerBook(book2);
+        Assertions.assertThat(bookService.searchBooksByTitle("*Title")).contains(book1);
+        Assertions.assertThat(bookService.searchBooksByTitle("*Title")).doesNotContain(book2);
     }
 
     @Test
