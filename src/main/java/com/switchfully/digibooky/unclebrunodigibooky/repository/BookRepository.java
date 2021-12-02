@@ -33,7 +33,9 @@ public class BookRepository {
         return bookList;
     }
 
-    public void addBook(Book book) {
+    public Book addBook(Book book) {
+        bookList.removeIf(repoBook -> repoBook.getIsbn().equals(book.getIsbn()));
         bookList.add(book);
+        return book;
     }
 }

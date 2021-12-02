@@ -115,4 +115,16 @@ public class BookController {
         myLogger.info("search completed for "+ authorName);
         return listOfBooksByAuthorName;
     }
+
+    @PutMapping(path = "/{isbn}", consumes = "application/json", produces = "application/json")
+    @ResponseStatus(HttpStatus.OK)
+    public BookDto updateBook(@PathVariable("isbn") String isbn, @RequestBody BookDto bookDto){
+        myLogger.info("Updating book method called for isbn: " + isbn);
+        Book bookToUpdate = bookMapper.mapBookDtoToBook(bookDto);
+        Book updatedBook = bookService.updateBook(isbn, bookToUpdate);
+        BookDto updatedBookDto = bookMapper.mapBookToDto(updatedBook);
+        myLogger.info("Updating succeeded for isbn " + updatedBookDto.getIsbn());
+        return updatedBookDto;
+
+    }
 }

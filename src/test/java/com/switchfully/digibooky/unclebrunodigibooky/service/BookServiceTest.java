@@ -125,4 +125,5 @@ class BookServiceTest {
         Assertions.assertThat(updatedBook.getAuthor()).isEqualTo(bookToUpdate.getAuthor());
         Assertions.assertThat(updatedBook.getSummary()).isEqualTo(bookToUpdate.getSummary());
     }
+
 }
