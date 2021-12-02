@@ -118,16 +118,16 @@ public class BookService {
     }
 
     public Book deleteBookBy(String bookId) {
-        if (isBookAvailable(bookId)){
-             bookHistoryRepository.addBook(getBookBy(bookId));
+        if (isBookAvailable(bookId)) {
+            bookHistoryRepository.addBook(getBookBy(bookId));
             return bookRepository.deleteBook(bookId);
         } else {
             throw new BookNotAvailableException("Book is lent out! Not possible to delete it");
         }
     }
 
-    public void restoreBookBy(String bookId){
-        if (isBookDeleted(bookId)){
+    public void restoreBookBy(String bookId) {
+        if (isBookDeleted(bookId)) {
             bookRepository.addBook(getBookBy(bookId));
             bookHistoryRepository.deleteBook(bookId);
         }
@@ -139,12 +139,12 @@ public class BookService {
                 .noneMatch(loan -> loan.getBookId().equals(bookId));
     }
 
-    public boolean isBookDeleted(String bookId){
+    public boolean isBookDeleted(String bookId) {
         return bookHistoryRepository.getBookHistory().stream()
                 .anyMatch(book -> book.getId().equals(bookId));
     }
 
-    public List<Book> getBookHistory(){
+    public List<Book> getBookHistory() {
         return bookHistoryRepository.getBookHistory();
     }
 }

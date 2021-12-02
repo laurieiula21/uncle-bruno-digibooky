@@ -5,8 +5,10 @@ import com.switchfully.digibooky.unclebrunodigibooky.domain.book.Book;
 import com.switchfully.digibooky.unclebrunodigibooky.domain.book.BookDto;
 import com.switchfully.digibooky.unclebrunodigibooky.domain.bookloan.BookLoan;
 import com.switchfully.digibooky.unclebrunodigibooky.domain.exceptions.BookNotAvailableException;
+import com.switchfully.digibooky.unclebrunodigibooky.domain.user.User;
 import com.switchfully.digibooky.unclebrunodigibooky.repository.BookLoanHistoryRepository;
 import com.switchfully.digibooky.unclebrunodigibooky.repository.BookLoanRepository;
+import com.switchfully.digibooky.unclebrunodigibooky.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -21,12 +23,14 @@ public class BookLoanService {
     private final BookLoanHistoryRepository bookLoanHistoryRepository;
     private final BookService bookService;
     private final BookMapper bookMapper;
+    private final UserRepository userRepository;
 
-    public BookLoanService(BookLoanRepository bookLoanRepository, BookLoanHistoryRepository bookLoanHistoryRepository, BookService bookService, BookMapper bookMapper) {
+    public BookLoanService(BookLoanRepository bookLoanRepository, BookLoanHistoryRepository bookLoanHistoryRepository, BookService bookService, BookMapper bookMapper, UserRepository userRepository) {
         this.bookLoanRepository = bookLoanRepository;
         this.bookLoanHistoryRepository = bookLoanHistoryRepository;
         this.bookService = bookService;
         this.bookMapper = bookMapper;
+        this.userRepository= userRepository;
     }
 
     public List<BookLoan> getAllBookLoans() {
@@ -84,5 +88,23 @@ public class BookLoanService {
     public Book getBookFromLoan(BookLoan bookLoan) {
         Book foundBook = bookService.getBookBy(bookLoan.getBookId());
         return foundBook;
+    }
+
+    public String getLenderUser (String userId) {
+        for (User user : userRepository.getUserList()) {
+            if (user.getId().equals(userId)) {
+                return user.getFullName();
+            }
+        }
+        return null;
+    }
+
+    public String getBookDetails(Book book) {
+        for (BookLoan bookInLoanRepository : bookLoanRepository.getBookLoanList()) {
+            if (book.getId().equals(bookInLoanRepository.getBookId())) {
+                return "This book is borrowed by " + getLenderUser(bookInLoanRepository.getUserId());
+            }
+        }
+        return "This book is available";
     }
 }

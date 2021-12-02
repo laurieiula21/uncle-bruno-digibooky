@@ -4,9 +4,9 @@ import com.switchfully.digibooky.unclebrunodigibooky.domain.DigibookyFeature;
 import com.switchfully.digibooky.unclebrunodigibooky.domain.book.BookDto;
 import com.switchfully.digibooky.unclebrunodigibooky.api.mapper.BookMapper;
 import com.switchfully.digibooky.unclebrunodigibooky.domain.book.Book;
-import com.switchfully.digibooky.unclebrunodigibooky.domain.user.UserDto;
-import com.switchfully.digibooky.unclebrunodigibooky.domain.user.UserRole;
+import com.switchfully.digibooky.unclebrunodigibooky.domain.book.EnhancedBookDto;
 import com.switchfully.digibooky.unclebrunodigibooky.service.AuthorisationService;
+import com.switchfully.digibooky.unclebrunodigibooky.service.BookLoanService;
 import com.switchfully.digibooky.unclebrunodigibooky.service.BookService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,9 +17,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -31,12 +29,14 @@ public class BookController {
     private final AuthorisationService authorisationService;
     private final BookMapper bookMapper;
     private final Logger myLogger = LoggerFactory.getLogger(BookController.class);
+    private final BookLoanService bookLoanService;
 
     @Autowired
-    public BookController(BookService bookService, AuthorisationService authorisationService, BookMapper bookMapper) {
+    public BookController(BookService bookService, AuthorisationService authorisationService, BookMapper bookMapper, BookLoanService bookLoanService) {
         this.bookService = bookService;
         this.authorisationService = authorisationService;
         this.bookMapper = bookMapper;
+        this.bookLoanService = bookLoanService;
     }
 
     @GetMapping(produces = "application/json")
@@ -52,10 +52,14 @@ public class BookController {
 
     @GetMapping(path = "/{isbn}", produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
-    public BookDto getBook(@PathVariable("isbn") String isbn) {
+    public EnhancedBookDto getBook(@PathVariable("isbn") String isbn, @RequestHeader(required = false) String authorization) {
+        myLogger.info("getBook method launched");
+        authorisationService.validateAuthorisation(DigibookyFeature.GET_ENHANCED_BOOK, authorization);
         Book book = bookService.getOneBook(isbn);
-        BookDto bookDto = bookMapper.mapBookToDto(book);
-        return bookDto;
+        String userInformationString = bookLoanService.getBookDetails(book);
+        EnhancedBookDto enhancedBookDto = bookMapper.mapBookToEnhancedDto(book, userInformationString);
+        myLogger.info("getBook method finished");
+        return enhancedBookDto;
     }
 
     /**

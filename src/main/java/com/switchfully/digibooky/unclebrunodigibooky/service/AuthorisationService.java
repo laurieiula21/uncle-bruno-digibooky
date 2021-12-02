@@ -34,6 +34,7 @@ public class AuthorisationService {
         // BookFeatures
         featureAuthorisations.put(DigibookyFeature.GET_ALL_BOOKS, UserRole.GUEST);
         featureAuthorisations.put(DigibookyFeature.DELETE_BOOK, UserRole.LIBRARIAN);
+        featureAuthorisations.put(DigibookyFeature.GET_ENHANCED_BOOK, UserRole.MEMBER);
     }
 
     public boolean validateAuthorisation(DigibookyFeature digibookyFeature, String authorization) {
