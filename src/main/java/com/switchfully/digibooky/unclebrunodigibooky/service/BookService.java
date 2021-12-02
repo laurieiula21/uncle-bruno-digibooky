@@ -1,7 +1,11 @@
 package com.switchfully.digibooky.unclebrunodigibooky.service;
 
+import com.switchfully.digibooky.unclebrunodigibooky.domain.bookloan.BookLoan;
+import com.switchfully.digibooky.unclebrunodigibooky.domain.exceptions.BookNotAvailableException;
 import com.switchfully.digibooky.unclebrunodigibooky.domain.exceptions.IsbnDoesNotExistException;
 import com.switchfully.digibooky.unclebrunodigibooky.domain.book.Book;
+import com.switchfully.digibooky.unclebrunodigibooky.repository.BookHistoryRepository;
+import com.switchfully.digibooky.unclebrunodigibooky.repository.BookLoanRepository;
 import com.switchfully.digibooky.unclebrunodigibooky.repository.BookRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,10 +23,14 @@ import java.util.NoSuchElementException;
 public class BookService {
 
     private final BookRepository bookRepository;
+    private final BookLoanRepository bookLoanRepository;
+    private final BookHistoryRepository bookHistoryRepository;
 
     @Autowired
-    public BookService(BookRepository bookRepository) {
+    public BookService(BookRepository bookRepository, BookLoanRepository bookLoanRepository, BookHistoryRepository bookHistoryRepository) {
         this.bookRepository = bookRepository;
+        this.bookLoanRepository = bookLoanRepository;
+        this.bookHistoryRepository = bookHistoryRepository;
     }
 
     public List<Book> getAllBooks() {
@@ -97,15 +105,46 @@ public class BookService {
 
     public Book updateBook(String isbn, Book bookToUpdate) {
         Book updatingBook = getOneBook(isbn);
-        if(bookToUpdate.getTitle() != null){
+        if (bookToUpdate.getTitle() != null) {
             updatingBook.setTitle(bookToUpdate.getTitle());
         }
-        if (bookToUpdate.getSummary() != null){
+        if (bookToUpdate.getSummary() != null) {
             updatingBook.setSummary(bookToUpdate.getSummary());
         }
         updatingBook.updateAuthor(bookToUpdate.getAuthor().getFirstName(), bookToUpdate.getAuthor().getLastName());
 
         return bookRepository.addBook(updatingBook);
 
+    }
+
+    public void deleteBookBy(String bookId) {
+        if (isBookAvailable(bookId)){
+            bookHistoryRepository.addBook(getBookBy(bookId));
+            bookRepository.deleteBook(bookId);
+        } else {
+            throw new BookNotAvailableException("Book is lent out! Not possible to delete it");
+        }
+    }
+
+    public void restoreBookBy(String bookId){
+        if (isBookDeleted(bookId)){
+            bookRepository.addBook(getBookBy(bookId));
+            bookHistoryRepository.deleteBook(bookId);
+        }
+    }
+
+    public boolean isBookAvailable(String bookId) {
+        List<BookLoan> bookLoanList = bookLoanRepository.getBookLoanList();
+        return bookLoanRepository.getBookLoanList().stream()
+                .noneMatch(loan -> loan.getBookId().equals(bookId));
+    }
+
+    public boolean isBookDeleted(String bookId){
+        return bookHistoryRepository.getBookHistory().stream()
+                .anyMatch(book -> book.getId().equals(bookId));
+    }
+
+    public List<Book> getBookHistory(){
+        return bookHistoryRepository.getBookHistory();
     }
 }
