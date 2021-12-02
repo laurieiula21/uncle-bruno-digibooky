@@ -104,17 +104,49 @@ public class BookService {
     }
 
     public Book updateBook(String isbn, Book bookToUpdate) {
-        Book updatingBook = getOneBook(isbn);
-        if (bookToUpdate.getTitle() != null) {
-            updatingBook.setTitle(bookToUpdate.getTitle());
-        }
-        if (bookToUpdate.getSummary() != null) {
-            updatingBook.setSummary(bookToUpdate.getSummary());
-        }
-        updatingBook.updateAuthor(bookToUpdate.getAuthor().getFirstName(), bookToUpdate.getAuthor().getLastName());
+        if(isBookInRepositoryByIsbn(isbn)) {
+            Book updatingBook = getOneBook(isbn);
+            Book updatedBook = updateMyBook(bookToUpdate, updatingBook);
 
-        return bookRepository.addBook(updatingBook);
+            return bookRepository.addBook(updatedBook);
+        }
+        if (isBookInHistoryByIsbn(isbn)){
+            Book updatingBook = getBookFromHistoryByIsbn(isbn);
+            Book updatedBook = updateMyBook(bookToUpdate, updatingBook);
 
+            return bookHistoryRepository.addBook(updatedBook);
+        }
+        throw new NoSuchElementException("Book to update with isbn: " + isbn + "is not in our repository or history");
+    }
+
+    private Book getBookFromHistoryByIsbn(String isbn) {
+        Book bookFromHistoryByIsbn = getBookHistory().stream()
+                .filter(book -> book.getIsbn().equals(isbn)).findFirst().get();
+        return bookFromHistoryByIsbn;
+    }
+
+    private boolean isBookInRepositoryByIsbn(String isbn) {
+        boolean isBookInRepositoryByIsbn = bookRepository.getAllBooks().stream()
+                .anyMatch(book -> book.getIsbn().equals(isbn));
+        return isBookInRepositoryByIsbn;
+    }
+
+    private boolean isBookInHistoryByIsbn(String isbn) {
+        boolean isBookInHistoryByIsbn = bookHistoryRepository.getBookHistory().stream()
+                .anyMatch(book -> book.getIsbn().equals(isbn));
+        return isBookInHistoryByIsbn;
+    }
+
+    private Book updateMyBook(Book bookWithNewUpdateInformation, Book existingBookThatNeedsUpdating) {
+        Book updatedBook = existingBookThatNeedsUpdating;
+        if (bookWithNewUpdateInformation.getTitle() != null) {
+            updatedBook.setTitle(bookWithNewUpdateInformation.getTitle());
+        }
+        if (bookWithNewUpdateInformation.getSummary() != null) {
+            updatedBook.setSummary(bookWithNewUpdateInformation.getSummary());
+        }
+        updatedBook.updateAuthor(bookWithNewUpdateInformation.getAuthor().getFirstName(), bookWithNewUpdateInformation.getAuthor().getLastName());
+        return updatedBook;
     }
 
     public Book deleteBookBy(String bookId) {
@@ -134,7 +166,6 @@ public class BookService {
     }
 
     public boolean isBookAvailable(String bookId) {
-        List<BookLoan> bookLoanList = bookLoanRepository.getBookLoanList();
         return bookLoanRepository.getBookLoanList().stream()
                 .noneMatch(loan -> loan.getBookId().equals(bookId));
     }
