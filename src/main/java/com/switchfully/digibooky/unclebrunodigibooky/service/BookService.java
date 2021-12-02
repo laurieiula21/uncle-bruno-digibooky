@@ -106,15 +106,15 @@ public class BookService {
     public Book updateBook(String isbn, Book bookToUpdate) {
         if(isBookInRepositoryByIsbn(isbn)) {
             Book updatingBook = getOneBook(isbn);
-            updateMyBook(bookToUpdate, updatingBook);
+            Book updatedBook = updateMyBook(bookToUpdate, updatingBook);
 
-            return bookRepository.addBook(updatingBook);
+            return bookRepository.addBook(updatedBook);
         }
         if (isBookInHistoryByIsbn(isbn)){
             Book updatingBook = getBookFromHistoryByIsbn(isbn);
-            updateMyBook(bookToUpdate, updatingBook);
+            Book updatedBook = updateMyBook(bookToUpdate, updatingBook);
 
-            return bookHistoryRepository.addBook(updatingBook);
+            return bookHistoryRepository.addBook(updatedBook);
         }
         throw new NoSuchElementException("Book to update with isbn: " + isbn + "is not in our repository or history");
     }
@@ -137,14 +137,16 @@ public class BookService {
         return isBookInHistoryByIsbn;
     }
 
-    private void updateMyBook(Book bookToUpdate, Book updatingBook) {
-        if (bookToUpdate.getTitle() != null) {
-            updatingBook.setTitle(bookToUpdate.getTitle());
+    private Book updateMyBook(Book bookWithNewUpdateInformation, Book existingBookThatNeedsUpdating) {
+        Book updatedBook = existingBookThatNeedsUpdating;
+        if (bookWithNewUpdateInformation.getTitle() != null) {
+            updatedBook.setTitle(bookWithNewUpdateInformation.getTitle());
         }
-        if (bookToUpdate.getSummary() != null) {
-            updatingBook.setSummary(bookToUpdate.getSummary());
+        if (bookWithNewUpdateInformation.getSummary() != null) {
+            updatedBook.setSummary(bookWithNewUpdateInformation.getSummary());
         }
-        updatingBook.updateAuthor(bookToUpdate.getAuthor().getFirstName(), bookToUpdate.getAuthor().getLastName());
+        updatedBook.updateAuthor(bookWithNewUpdateInformation.getAuthor().getFirstName(), bookWithNewUpdateInformation.getAuthor().getLastName());
+        return updatedBook;
     }
 
     public Book deleteBookBy(String bookId) {

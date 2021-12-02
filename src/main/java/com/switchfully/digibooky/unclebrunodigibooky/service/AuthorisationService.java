@@ -22,6 +22,7 @@ public class AuthorisationService {
         //Add your feature with minimum user role required for that feature here
 
         // User Features
+        featureAuthorisations.put(DigibookyFeature.REGISTER_USER, UserRole.GUEST);
         featureAuthorisations.put(DigibookyFeature.REGISTER_LIBRARIAN, UserRole.ADMIN);
         featureAuthorisations.put(DigibookyFeature.GET_ALL_USERS, UserRole.ADMIN);
 
@@ -33,7 +34,12 @@ public class AuthorisationService {
 
         // BookFeatures
         featureAuthorisations.put(DigibookyFeature.GET_ALL_BOOKS, UserRole.GUEST);
+        featureAuthorisations.put(DigibookyFeature.SEARCH_BOOK_BY_ISBN, UserRole.GUEST);
+        featureAuthorisations.put(DigibookyFeature.SEARCH_BOOK_BY_TITLE, UserRole.GUEST);
+        featureAuthorisations.put(DigibookyFeature.SEARCH_BOOK_BY_AUTHOR, UserRole.GUEST);
+        featureAuthorisations.put(DigibookyFeature.REGISTER_NEW_BOOK, UserRole.LIBRARIAN);
         featureAuthorisations.put(DigibookyFeature.DELETE_BOOK, UserRole.LIBRARIAN);
+        featureAuthorisations.put(DigibookyFeature.UPDATE_BOOK, UserRole.LIBRARIAN);
     }
 
     public boolean validateAuthorisation(DigibookyFeature digibookyFeature, String authorization) {

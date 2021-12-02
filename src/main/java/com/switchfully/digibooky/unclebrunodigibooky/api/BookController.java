@@ -4,8 +4,6 @@ import com.switchfully.digibooky.unclebrunodigibooky.domain.DigibookyFeature;
 import com.switchfully.digibooky.unclebrunodigibooky.domain.book.BookDto;
 import com.switchfully.digibooky.unclebrunodigibooky.api.mapper.BookMapper;
 import com.switchfully.digibooky.unclebrunodigibooky.domain.book.Book;
-import com.switchfully.digibooky.unclebrunodigibooky.domain.user.UserDto;
-import com.switchfully.digibooky.unclebrunodigibooky.domain.user.UserRole;
 import com.switchfully.digibooky.unclebrunodigibooky.service.AuthorisationService;
 import com.switchfully.digibooky.unclebrunodigibooky.service.BookService;
 import org.slf4j.Logger;
@@ -17,9 +15,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -42,11 +38,13 @@ public class BookController {
     @GetMapping(produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
     public List<BookDto> getAllBooks(@RequestHeader(required = false) String authorization) {
+        myLogger.info("get all books method has been queried");
         authorisationService.validateAuthorisation(DigibookyFeature.GET_ALL_BOOKS, authorization);
         List<Book> bookList = bookService.getAllBooks();
         List<BookDto> bookDtoList = bookList.stream()
                 .map(bookMapper::mapBookToDto)
                 .collect(Collectors.toList());
+        myLogger.info("get all books method has been successfully finished");
         return bookDtoList;
     }
 
@@ -66,11 +64,14 @@ public class BookController {
      */
     @GetMapping(produces = "application/json", params = "isbn")
     @ResponseStatus(HttpStatus.OK)
-    public List<BookDto> search(@RequestParam String isbn) {
-        myLogger.info(isbn + " has been queried");
-        return bookService.searchBookByISBN(isbn).stream()
+    public List<BookDto> search(@RequestParam String isbn, @RequestHeader(required = false) String authorization) {
+        myLogger.info("search method by isbn " + isbn + " has been queried");
+        authorisationService.validateAuthorisation(DigibookyFeature.SEARCH_BOOK_BY_ISBN, authorization);
+        List<BookDto> bookDtosByIbn = bookService.searchBookByISBN(isbn).stream()
                 .map(bookMapper::mapBookToDto)
                 .toList();
+        myLogger.info("search method by isbn " + isbn + " has been successfully finished");
+        return bookDtosByIbn;
     }
 
     /**
@@ -89,8 +90,9 @@ public class BookController {
 
     @GetMapping(path = "/search-by-title", produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
-    public Collection<BookDto> searchBookByTitle(@RequestParam String title){
+    public Collection<BookDto> searchBookByTitle(@RequestParam String title, @RequestHeader(required = false) String authorization){
         myLogger.info("Search book by title method is called");
+        authorisationService.validateAuthorisation(DigibookyFeature.SEARCH_BOOK_BY_TITLE, authorization);
         Collection<Book> books = bookService.searchBooksByTitle(title);
         Collection<BookDto> bookDtos =  books.stream()
                 .map(bookMapper::mapBookToDto)
@@ -106,9 +108,9 @@ public class BookController {
      */
     @GetMapping(path="/search-by-author", produces="application/json", params="authorName")
     @ResponseStatus(HttpStatus.OK)
-    public List<BookDto> searchBookByAuthor(@RequestParam() String authorName){
-
+    public List<BookDto> searchBookByAuthor(@RequestParam() String authorName, @RequestHeader(required = false) String authorization){
         myLogger.info("search started for "+ authorName);
+        authorisationService.validateAuthorisation(DigibookyFeature.SEARCH_BOOK_BY_AUTHOR, authorization);
         List<BookDto> listOfBooksByAuthorName =  bookService.searchBookByAuthor(authorName).stream()
                 .map(bookMapper::mapBookToDto)
                 .toList();
@@ -116,10 +118,12 @@ public class BookController {
         return listOfBooksByAuthorName;
     }
 
-    @PutMapping(path = "/{isbn}", consumes = "application/json", produces = "application/json")
+    @PutMapping(path = "/update/{isbn}", consumes = "application/json", produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
-    public BookDto updateBook(@PathVariable("isbn") String isbn, @RequestBody BookDto bookDto){
+    public BookDto updateBook(@PathVariable("isbn") String isbn, @RequestBody BookDto bookDto,
+                              @RequestHeader(required = false) String authorization){
         myLogger.info("Updating book method called for isbn: " + isbn);
+        authorisationService.validateAuthorisation(DigibookyFeature.UPDATE_BOOK, authorization);
         Book bookToUpdate = bookMapper.mapBookDtoToBook(bookDto);
         Book updatedBook = bookService.updateBook(isbn, bookToUpdate);
         BookDto updatedBookDto = bookMapper.mapBookToDto(updatedBook);
@@ -127,9 +131,9 @@ public class BookController {
         return updatedBookDto;
     }
 
-    @PutMapping(path = "/{bookId}", consumes = "application/json", produces = "application/json")
+    @PutMapping(path = "/delete/{bookId}", consumes = "application/json", produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
-    public BookDto updateBook(@PathVariable("bookId") String bookId, @RequestHeader(required = false) String authorization){
+    public BookDto deleteBook(@PathVariable("bookId") String bookId, @RequestHeader(required = false) String authorization){
         myLogger.info("Deleting book method called for bookId: " + bookId);
         authorisationService.validateAuthorisation(DigibookyFeature.DELETE_BOOK, authorization);
         Book book = bookService.deleteBookBy(bookId);

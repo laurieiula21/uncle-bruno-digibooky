@@ -33,24 +33,24 @@ public class UserController {
         this.userValidator = userValidator;
     }
 
-
     @PostMapping(consumes = "application/json", produces = "application/json")
     @ResponseStatus(HttpStatus.CREATED)
-    public UserDto registerUser(@RequestBody UserDto userDto){
+    public UserDto registerUser(@RequestBody UserDto userDto, @RequestHeader(required = false) String authorization) {
+        myLogger.info("Register user method called");
+        authorisationService.validateAuthorisation(DigibookyFeature.REGISTER_USER, authorization);
         UserDto validatedUserDto = userValidator.validate(userDto);
         User user = userMapper.mapToUser(validatedUserDto);
         User savedUser = userService.saveUser(user);
-        return userMapper.mapToUserDto(savedUser);
+        UserDto registeredUserDto = userMapper.mapToUserDto(savedUser);
+        myLogger.info("Register user method successfully finished");
+        return registeredUserDto;
     }
 
-    /*
-
-     */
     @PutMapping(path = "/register-librarian/{id}", produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
-    public UserDto registerLibrarian(@PathVariable("id") String id, @RequestHeader(required = false) String authorization){
+    public UserDto registerLibrarian(@PathVariable("id") String id, @RequestHeader(required = false) String authorization) {
         myLogger.info("Register librarian method called");
-        authorisationService.validateAuthorisation(DigibookyFeature.REGISTER_LIBRARIAN,authorization);
+        authorisationService.validateAuthorisation(DigibookyFeature.REGISTER_LIBRARIAN, authorization);
         User userMember = userService.getUserById(id);
         User userLibrarian = userService.registerUserAsLibrarian(userMember);
         UserDto userDto = userMapper.mapToUserDto(userLibrarian);
@@ -60,16 +60,14 @@ public class UserController {
 
     @GetMapping(produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
-    public Collection<UserDto> getAllUsers(@RequestHeader(required = false) String authorization){
-
+    public Collection<UserDto> getAllUsers(@RequestHeader(required = false) String authorization) {
         myLogger.info("Get all users method called");
-        authorisationService.validateAuthorisation(DigibookyFeature.GET_ALL_USERS,authorization);
+        authorisationService.validateAuthorisation(DigibookyFeature.GET_ALL_USERS, authorization);
 
         Collection<UserDto> users = userService.getUsers().stream()
                 .map(userMapper::mapToUserDtoWithoutInss)
                 .collect(Collectors.toList());
         myLogger.info("Get all users method succesfully concluded");
         return users;
-
     }
 }
