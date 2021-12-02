@@ -77,9 +77,9 @@ class BookServiceTest {
     @Test
     void givenBookWithTitleInList_whenSearchingForBooksWithFullTitle_thenBookWithMatchInTitleIsInTheListReturned() {
         String myTitle1 = "exampleTitle";
-        Book book1 = new Book(null,myTitle1,null,null);
+        Book book1 = new Book("isbn500",myTitle1,null,null);
         String myTitle2 = "notAMatch";
-        Book book2 = new Book(null,myTitle2,null,null);
+        Book book2 = new Book("isbn501",myTitle2,null,null);
         bookService.registerBook(book1);
         bookService.registerBook(book2);
         Assertions.assertThat(bookService.searchBooksByTitle(myTitle1)).contains(book1);
@@ -89,9 +89,9 @@ class BookServiceTest {
     @Test
     void givenBookWithTitleInList_whenSearchingForBooksWithWildcardsTitle_thenBookWithMatchInTitleIsInTheListReturned() {
         String myTitle1 = "exampleTitle";
-        Book book1 = new Book(null,myTitle1,null,null);
+        Book book1 = new Book("isbn500",myTitle1,null,null);
         String myTitle2 = "notAMatch";
-        Book book2 = new Book(null,myTitle2,null,null);
+        Book book2 = new Book("isbn501",myTitle2,null,null);
         bookService.registerBook(book1);
         bookService.registerBook(book2);
         Assertions.assertThat(bookService.searchBooksByTitle("*Title")).contains(book1);
@@ -101,9 +101,9 @@ class BookServiceTest {
     @Test
     void givenBooks_whenSearchingForBooksWithOnlyWildcard_thenAllBooksInTheListReturned() {
         String myTitle1 = "exampleTitle1";
-        Book book1 = new Book(null,myTitle1,null,null);
+        Book book1 = new Book("isbn500",myTitle1,null,null);
         String myTitle2 = "exampleTitle2";
-        Book book2 = new Book(null,myTitle2,null,null);
+        Book book2 = new Book("isbn501",myTitle2,null,null);
         bookService.registerBook(book1);
         bookService.registerBook(book2);
         Assertions.assertThat(bookService.searchBooksByTitle("*")).contains(book1);
@@ -125,4 +125,5 @@ class BookServiceTest {
         Assertions.assertThat(updatedBook.getAuthor()).isEqualTo(bookToUpdate.getAuthor());
         Assertions.assertThat(updatedBook.getSummary()).isEqualTo(bookToUpdate.getSummary());
     }
+
 }

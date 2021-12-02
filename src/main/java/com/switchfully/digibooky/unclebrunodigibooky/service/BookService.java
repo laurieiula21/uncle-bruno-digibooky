@@ -96,6 +96,16 @@ public class BookService {
     }
 
     public Book updateBook(String isbn, Book bookToUpdate) {
-        return null;
+        Book updatingBook = getOneBook(isbn);
+        if(bookToUpdate.getTitle() != null){
+            updatingBook.setTitle(bookToUpdate.getTitle());
+        }
+        if (bookToUpdate.getSummary() != null){
+            updatingBook.setSummary(bookToUpdate.getSummary());
+        }
+        updatingBook.updateAuthor(bookToUpdate.getAuthor().getFirstName(), bookToUpdate.getAuthor().getLastName());
+
+        return bookRepository.addBook(updatingBook);
+
     }
 }

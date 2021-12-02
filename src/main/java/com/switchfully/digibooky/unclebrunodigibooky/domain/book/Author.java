@@ -5,8 +5,8 @@ import java.util.UUID;
 
 public class Author {
     private final String id;
-    private final String lastName;
-    private final String firstName;
+    private String lastName;
+    private String firstName;
 
     public Author(String lastName, String firstName) {
         this.id = UUID.randomUUID().toString();
@@ -24,6 +24,17 @@ public class Author {
 
     public String getFirstName() {
         return firstName;
+    }
+
+    public void setLastName(String lastName) {
+
+        if(lastName != null){
+            this.lastName = lastName;
+        }
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
     @Override

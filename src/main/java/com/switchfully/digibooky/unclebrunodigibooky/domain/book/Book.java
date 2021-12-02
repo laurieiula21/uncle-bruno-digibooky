@@ -5,9 +5,9 @@ import java.util.UUID;
 public class Book {
     private final String id;
     private final String isbn;
-    private final String title;
-    private final Author author;
-    private final String summary;
+    private String title;
+    private Author author;
+    private String summary;
 
     public Book(String isbn, String title, Author author, String summary) {
         this.id = UUID.randomUUID().toString();
@@ -29,13 +29,31 @@ public class Book {
         return title;
     }
 
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
     public Author getAuthor() {
         return author;
+    }
+
+    public void setAuthor(Author author) {
+        this.author = author;
     }
 
     public String getSummary() {
         return summary;
     }
+
+    public void setSummary(String summary) {
+        this.summary = summary;
+    }
+
+    public void updateAuthor(String firstname, String lastname){
+        author.setFirstName(firstname);
+        author.setLastName(lastname);
+    }
+
 
     @Override
     public String toString(){
