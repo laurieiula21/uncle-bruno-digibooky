@@ -19,8 +19,9 @@ public class BookHistoryRepository {
         bookHistoryList = new ArrayList<>();
     }
 
-    public void addBook(Book book) {
+    public Book addBook(Book book) {
         bookHistoryList.add(book);
+        return book;
     }
 
     public List<Book> getBookHistory() {
