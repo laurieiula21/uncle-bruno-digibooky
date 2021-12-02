@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Repository
 public class BookRepository {
@@ -37,5 +38,14 @@ public class BookRepository {
         bookList.removeIf(repoBook -> repoBook.getIsbn().equals(book.getIsbn()));
         bookList.add(book);
         return book;
+    }
+
+    public Book deleteBook(String bookId) {
+        Book bookToFind = getAllBooks().stream()
+                .filter(book -> book.getId().equals(bookId))
+                .findFirst()
+                .orElseThrow(() -> new NoSuchElementException("Book with ID: " + bookId + " not found, so it can't be deleted!"));
+        bookList.remove(bookToFind);
+        return bookToFind;
     }
 }

@@ -1,34 +1,37 @@
 package com.switchfully.digibooky.unclebrunodigibooky.service;
 
+import com.switchfully.digibooky.unclebrunodigibooky.api.mapper.BookMapper;
 import com.switchfully.digibooky.unclebrunodigibooky.domain.book.Author;
 import com.switchfully.digibooky.unclebrunodigibooky.domain.book.Book;
+import com.switchfully.digibooky.unclebrunodigibooky.domain.exceptions.BookNotAvailableException;
 import com.switchfully.digibooky.unclebrunodigibooky.domain.exceptions.IsbnDoesNotExistException;
+import com.switchfully.digibooky.unclebrunodigibooky.repository.BookHistoryRepository;
+import com.switchfully.digibooky.unclebrunodigibooky.repository.BookLoanHistoryRepository;
+import com.switchfully.digibooky.unclebrunodigibooky.repository.BookLoanRepository;
 import com.switchfully.digibooky.unclebrunodigibooky.repository.BookRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThat;
 
-
+@SpringBootTest
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 class BookServiceTest {
+    @Autowired
     BookService bookService;
-    BookRepository bookRepository;
-
-    @BeforeEach
-    void beforeEach() {
-        this.bookRepository = new BookRepository();
-        this.bookService = new BookService(bookRepository);
-    }
+    @Autowired
+    BookLoanService bookLoanService;
 
     @Test
     void GivenANotExistingISBN_WhenGettingOneBook_ThenThrowAnException() {
         assertThatExceptionOfType(IsbnDoesNotExistException.class).isThrownBy(() -> bookService.getOneBook("wrongISBN)"));
-
-
     }
 
     @Test
@@ -71,8 +74,6 @@ class BookServiceTest {
         );
         assertThat(bookService.searchBookByAuthor(givenAuthorName).get(0).getIsbn()).isEqualTo(expectedList.get(0).getIsbn());
         assertThat(bookService.searchBookByAuthor(givenAuthorName).get(1).getIsbn()).isEqualTo(expectedList.get(1).getIsbn());
-
-
     }
     @Test
     void givenBookWithTitleInList_whenSearchingForBooksWithFullTitle_thenBookWithMatchInTitleIsInTheListReturned() {
@@ -126,6 +127,47 @@ class BookServiceTest {
         Assertions.assertThat(updatedBook.getSummary()).isEqualTo(bookToUpdate.getSummary());
     }
 
+    @Test
+    void givenExistingBook_whenDeletingThatBook_thenTheBookIsNotInTheBookRepositoryAnymore(){
+        Author author = new Author("lastName","firstName");
+        Book book = new Book("realIsbn","title",author,"summary");
+        bookService.registerBook(book);
+        String bookId = book.getId();
+
+        bookService.deleteBookBy(bookId);
+
+        Assertions.assertThat(!bookService.getAllBooks().contains(book)).isTrue();
+
+
+    }
+
+    @Test
+    void givenExistingBook_whenDeletingThatBook_thenTheBookIInTheBookHistoryRepository(){
+        Author author = new Author("lastName","firstName");
+        Book book = new Book("realIsbn","title",author,"summary");
+        bookService.registerBook(book);
+        String bookId = book.getId();
+
+        bookService.deleteBookBy(bookId);
+
+        Assertions.assertThat(bookService.getBookHistory().contains(book)).isTrue();
+
+    }
+
+    @Test
+    void givenExistingBookThatIsLentOut_whenDeletingThatBook_thenThrowBookNotAvailableException(){
+        Author author = new Author("lastName","firstName");
+        Book book = new Book("realIsbn","title",author,"summary");
+        bookService.registerBook(book);
+        String bookId = book.getId();
+        bookLoanService.lendBook("realIsbn", "aUser");
+
+        Assertions.assertThat(bookService.getAllBooks().contains(book)).isTrue();
+        Assertions.assertThat(bookService.getBookHistory().contains(book)).isFalse();
+        Assertions.assertThatThrownBy(() -> bookService.deleteBookBy(bookId))
+                .isInstanceOf(BookNotAvailableException.class);
+
+    }
     @Test
     void givenExistingBookInHistoryRepository_whenUpdatingBookWithNewInformation_thenBooksInformationIsAllUpdated(){
         Author author = new Author("lastName","firstName");
