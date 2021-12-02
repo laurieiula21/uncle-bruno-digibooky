@@ -60,8 +60,8 @@ public class BookService {
                 .orElseThrow(() -> new NoSuchElementException("No book with id: " + bookId + " found"));
     }
 
-    public void registerBook(Book book) {
-        bookRepository.addBook(book);
+    public Book registerBook(Book book) {
+        return bookRepository.addBook(book);
     }
 
 
